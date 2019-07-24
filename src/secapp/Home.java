@@ -21,7 +21,7 @@ public class Home extends javax.swing.JFrame {
      //static Available_tests completed;
      static Available_tests pending;
      static all_answers answers;
-     
+     static Pending_Tests pending_Tests;
      
      
     
@@ -35,6 +35,7 @@ public class Home extends javax.swing.JFrame {
         completed =  new Completed_Tests();
         pending = new Available_tests();
         answers =  new all_answers();
+        pending_Tests = new Pending_Tests();
         mainPanel.setLayout(layout);
         // 75%
         GridBagConstraints c =  new GridBagConstraints();
@@ -51,8 +52,10 @@ public class Home extends javax.swing.JFrame {
         mainPanel.add(answers,c);
         c.gridx =0;
         c.gridy=0;
-        
-        
+         mainPanel.add(pending_Tests,c);
+        c.gridx =0;
+        c.gridy=0;
+        pending_Tests.setVisible(false);
     }
 
     /**
@@ -112,6 +115,11 @@ public class Home extends javax.swing.JFrame {
         });
 
         jPanel6.setBackground(new java.awt.Color(54, 33, 89));
+        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jPanel6MouseClicked(evt);
+            }
+        });
 
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/secapp.dashboard.images/icons8_knowledge_sharing_30px.png"))); // NOI18N
@@ -349,6 +357,7 @@ public class Home extends javax.swing.JFrame {
         completed.setVisible(true);
         pending.setVisible(false);
        answers.setVisible(false);
+       pending_Tests.setVisible(false);
     }//GEN-LAST:event_completedTest_btnMouseClicked
 
     private void pendingTest_btnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pendingTest_btnMouseClicked
@@ -358,15 +367,17 @@ public class Home extends javax.swing.JFrame {
          pending.setVisible(true);
          completed.setVisible(false);
          answers.setVisible(false);
-         
-         Pending_Tests countdown = new Pending_Tests();
-         countdown.startCountdown("00:12","RUN");
+         pending_Tests.setVisible(false);
     }//GEN-LAST:event_pendingTest_btnMouseClicked
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         // TODO add your handling code here:
         this.setExtendedState(MAXIMIZED_BOTH);
     }//GEN-LAST:event_formWindowOpened
+
+    private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel6MouseClicked
 
     /**
      * @param args the command line arguments
@@ -402,6 +413,7 @@ public class Home extends javax.swing.JFrame {
                 completed.setVisible(false);
                 pending.setVisible(false);
                 answers.setVisible(false);
+                pending_Tests.setVisible(false);
             }
         });
     }

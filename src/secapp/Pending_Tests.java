@@ -11,23 +11,11 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Projections;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Map;
-import javax.swing.*;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import org.bson.Document;
-import static secapp.Home.answers;
-import static secapp.Home.completed;
 
 /**
  *
@@ -36,51 +24,33 @@ import static secapp.Home.completed;
 public class Pending_Tests extends javax.swing.JPanel {
     
     int Min, Sec;
-     private Timer timer;
+    private Timer timer;
     private int[] time;
     final int MIN = 0;
     final int SEC = 1;
     static Pending_Tests pending;
-     static all_answers answers;
-   
-
+    static all_answers answers;
+    
     /**
      * Creates new form Pending_Tests
      */
     public Pending_Tests() {
         initComponents();
-        btnPrevious.setVisible(false);
+//        btnPrevious.setVisible(false);
         //completed =  new Completed_Tests();
-        GridBagLayout layout =  new GridBagLayout();
+//        GridBagLayout layout =  new GridBagLayout();
         //completed =  new Completed_Tests();
         //pending = new Pending_Tests();
-        answers =  new all_answers();
-        questionDisplay.setLayout(layout);
-        // 75%
-        GridBagConstraints c =  new GridBagConstraints();
-        c.gridx =0;
-        c.gridy=0;
-        questionDisplay.add(answers,c);
-        c.gridx =0;
-        c.gridy=0;
-        
-        
+//        answers =  new all_answers();
+//        questionDisplay.setLayout(layout);
+//        // 75%
+//        GridBagConstraints c =  new GridBagConstraints();
+//        c.gridx =0;
+//        c.gridy=0;
+//        questionDisplay.add(answers,c);
+//        c.gridx =0;
+//        c.gridy=0;
     }
-    // TIMER IMPLEMENTATION
-     /*public JPanel addText(){
-        //count = new JLabel();
-        count.setFont(new Font("Arial Black", Font.BOLD, 25));
-        //count.setHorizontalAlignment(SwingConstants.CENTER);
-        count.setBackground(Color.RED);
-        //message = new JLabel();
-        message.setFont(new Font("Arial Black", Font.BOLD, 15));
-        //JPanel panel = new JPanel(new GridLayout(2,1));
-        //panel.add(count);
-        //panel.add(message);
-        //panel.setBackground(Color.WHITE);
-        //message.setHorizontalAlignment(SwingConstants.CENTER);
-        //return panel;
-    }*/
      public void displayTime(int min, int sec){
         String minute = String.format("%02d",min);
         String second = (String.format("%02d",sec));
@@ -314,10 +284,10 @@ public class Pending_Tests extends javax.swing.JPanel {
                         .addGap(21, 21, 21)
                         .addComponent(questionNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(43, 43, 43)
-                .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(q1_btn)
-                    .addComponent(q2_btn)
-                    .addComponent(q3_btn)
+                .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(q1_btn, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(q2_btn, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(q3_btn, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(q4_btn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 68, Short.MAX_VALUE)
                 .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

@@ -5,36 +5,21 @@
  */
 package secapp;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import org.bson.Document;
 import org.bson.types.ObjectId;
-import static secapp.MongoStackoverflow.listener;
 
 /**
  *
@@ -42,6 +27,10 @@ import static secapp.MongoStackoverflow.listener;
  */
 public class Available_tests extends javax.swing.JPanel {
 
+    private MongoClient mongoClient = null;
+    private FindIterable<Document> documents = null;
+
+    private MongoDatabase db = null;
     /**
      * Creates new form Available_tests
      */
@@ -50,7 +39,8 @@ public class Available_tests extends javax.swing.JPanel {
 
     public Available_tests() {
         initComponents();
-
+        connect();
+        getData();
         //JPanel panel = new JPanel(new BorderLayout());
         //JButton button = new JButton("Show Data");
         //button.addActionListener(listener);
@@ -128,7 +118,7 @@ public class Available_tests extends javax.swing.JPanel {
         button.setBackground(new java.awt.Color(54, 33, 89));
         button.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         button.setForeground(new java.awt.Color(255, 255, 255));
-        button.setText("Show Data");
+        button.setText("Refresh");
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonActionPerformed(evt);
@@ -141,9 +131,9 @@ public class Available_tests extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnStartTest)
-                    .addComponent(button))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnStartTest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -161,7 +151,7 @@ public class Available_tests extends javax.swing.JPanel {
         AvailableLayout.setHorizontalGroup(
             AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AvailableLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 834, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -192,50 +182,17 @@ public class Available_tests extends javax.swing.JPanel {
 
     private void buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonActionPerformed
         // TODO add your handling code here:
-        MongoClient mongoClient = null;
-        DBCursor cursor = null;
-
-        try {
-
-            mongoClient = new MongoClient("localhost", 27017);
-            DB db = mongoClient.getDB("SECAPP");
-            DBCollection coll = db.getCollection("testq");
-            cursor = coll.find();
-
-            String[] columnNames = {"id", "Test description", "Course code", "Date", "Time", "Open/Closed"};
-            DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-             int counter = 0;
-            while (cursor.hasNext()) {
-                DBObject obj = cursor.next();
-                String testTitle = (String) obj.get("Title");
-                String courseCode = (String) obj.get("Course code");
-                Date date = getDate((String) obj.get("Date"));
-                String openORclosed = (String) obj.get("Open/Closed");
-                ObjectId id = (ObjectId) obj.get("_id");
-                model.addRow(new Object[]{id, testTitle, courseCode, date, openORclosed});
-            }
-            table.setModel(model);
-
-            cursor.close();
-            mongoClient.close();
-            throw new UnknownHostException("I am Exception Alpha!");
-        } catch (UnknownHostException ex) {
-            Logger.getLogger(MongoStackoverflow.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-            if (mongoClient != null) {
-                mongoClient.close();
-            }
-        }
+        getData();
     }//GEN-LAST:event_buttonActionPerformed
 
     private void btnStartTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartTestActionPerformed
         // TODO add your handling code here:
-        pending = new Pending_Tests();
-        pending.setVisible(true);
-
+        String testName = (String) table.getValueAt(table.getSelectedRow(), 1);
+        String duration = (String) table.getValueAt(table.getSelectedRow(), 4);
+        duration += ":00";
+        Home.pending_Tests.startCountdown(duration, testName);
+        this.setVisible(false);
+        Home.pending_Tests.setVisible(true);
     }//GEN-LAST:event_btnStartTestActionPerformed
 
     private void tablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tablePropertyChange
@@ -266,15 +223,41 @@ public class Available_tests extends javax.swing.JPanel {
 
         return (ListSelectionEvent e) -> {
             //table.getValueAt(table.getSelectedRow(), WIDTH)
-            Date date = (Date)table.getValueAt(table.getSelectedRow(), 3);// the 3 is the index of the date 
+            Date date = (Date) table.getValueAt(table.getSelectedRow(), 3);// the 3 is the index of the date 
             /* if(date.compareTo(new Date(System.currentTimeMillis()))<=0)
                 btnStartTest.setEnabled(true);
             else
                 btnStartTest.setEnabled(false);
              */
-            btnStartTest.setEnabled(date.compareTo(new Date(System.currentTimeMillis()))<=0);
-                
+            btnStartTest.setEnabled(true);/*date.compareTo(new Date(System.currentTimeMillis()))<=0);*/
+
         };
     }
 
+    final void connect() {
+        mongoClient = new MongoClient("localhost", 27017);
+        db = mongoClient.getDatabase("SECAPP");
+    }
+    
+    final void disconnect(){
+        mongoClient.close();
+    }
+
+    final void getData() {
+        MongoCollection coll = db.getCollection("testq");
+        documents = coll.find();
+        String[] columnNames = {"id", "Test description", "Course code", "Date", "Time", "Open/Closed"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        int counter = 0;
+        for (Document obj : documents) {
+            String testTitle = (String) obj.get("Title");
+            String courseCode = (String) obj.get("Course code");
+            Date date = getDate((String) obj.get("Date"));
+            String openORclosed = (String) obj.get("Open/Closed");
+            String duratation = (String) obj.get("Duration");
+            ObjectId id = (ObjectId) obj.get("_id");
+            model.addRow(new Object[]{id, testTitle, courseCode, date, duratation, openORclosed});
+        }
+        table.setModel(model);
+    }
 }
