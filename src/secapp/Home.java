@@ -6,6 +6,7 @@
 package secapp;
 
 import java.awt.Color;
+import static java.awt.Frame.MAXIMIZED_BOTH;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
@@ -22,6 +23,7 @@ public class Home extends javax.swing.JFrame {
      static Available_tests pending;
      static all_answers answers;
      static Pending_Tests pending_Tests;
+    
      
      
     
@@ -34,7 +36,7 @@ public class Home extends javax.swing.JFrame {
         //completed =  new Completed_Tests();
         completed =  new Completed_Tests();
         pending = new Available_tests();
-        answers =  new all_answers();
+       // answers =  new all_answers();
         pending_Tests = new Pending_Tests();
         mainPanel.setLayout(layout);
         // 75%
@@ -49,7 +51,7 @@ public class Home extends javax.swing.JFrame {
         c.gridx =0;
         c.gridy=0;
         //c.weightx =0.75;
-        mainPanel.add(answers,c);
+        //mainPanel.add(answers,c);
         c.gridx =0;
         c.gridy=0;
          mainPanel.add(pending_Tests,c);
@@ -69,21 +71,21 @@ public class Home extends javax.swing.JFrame {
 
         bg = new javax.swing.JPanel();
         sidepane2 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
+        competedArea = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         completedTest_btn = new javax.swing.JLabel();
-        jPanel6 = new javax.swing.JPanel();
-        jLabel11 = new javax.swing.JLabel();
-        pendingTest_btn = new javax.swing.JLabel();
-        btn_comingsoon = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
-        gradebook_btn = new javax.swing.JLabel();
-        btn_admin = new javax.swing.JPanel();
-        jLabel15 = new javax.swing.JLabel();
-        chat_btn = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel20 = new javax.swing.JLabel();
+        btn_admin = new javax.swing.JPanel();
+        jLabel15 = new javax.swing.JLabel();
+        chat_btn = new javax.swing.JLabel();
+        gradebook_area = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        gradebook_btn = new javax.swing.JLabel();
+        pendingArea = new javax.swing.JPanel();
+        jLabel11 = new javax.swing.JLabel();
+        pendingTest_btn = new javax.swing.JLabel();
         mainPanel = new javax.swing.JPanel();
         horizontalBar = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
@@ -100,7 +102,12 @@ public class Home extends javax.swing.JFrame {
         sidepane2.setBackground(new java.awt.Color(54, 33, 89));
         sidepane2.setPreferredSize(new java.awt.Dimension(250, 384));
 
-        jPanel5.setBackground(new java.awt.Color(54, 33, 89));
+        competedArea.setBackground(new java.awt.Color(54, 33, 89));
+        competedArea.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                competedAreaMousePressed(evt);
+            }
+        });
 
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/secapp.dashboard.images/icons8_knowledge_sharing_30px.png"))); // NOI18N
@@ -114,55 +121,35 @@ public class Home extends javax.swing.JFrame {
             }
         });
 
-        jPanel6.setBackground(new java.awt.Color(54, 33, 89));
-        jPanel6.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jPanel6MouseClicked(evt);
-            }
-        });
-
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/secapp.dashboard.images/icons8_knowledge_sharing_30px.png"))); // NOI18N
-
-        pendingTest_btn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        pendingTest_btn.setForeground(new java.awt.Color(204, 204, 204));
-        pendingTest_btn.setText("Pending Tests");
-        pendingTest_btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                pendingTest_btnMouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        javax.swing.GroupLayout competedAreaLayout = new javax.swing.GroupLayout(competedArea);
+        competedArea.setLayout(competedAreaLayout);
+        competedAreaLayout.setHorizontalGroup(
+            competedAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(competedAreaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(pendingTest_btn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(completedTest_btn)
+                .addContainerGap(80, Short.MAX_VALUE))
         );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
+        competedAreaLayout.setVerticalGroup(
+            competedAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, competedAreaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pendingTest_btn)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(competedAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(competedAreaLayout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(completedTest_btn)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
-        btn_comingsoon.setBackground(new java.awt.Color(54, 33, 89));
+        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel17.setForeground(new java.awt.Color(204, 204, 204));
+        jLabel17.setText("SECAPP");
 
-        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/secapp.dashboard.images/icons8_report_card_80px.png"))); // NOI18N
-
-        gradebook_btn.setBackground(new java.awt.Color(54, 33, 89));
-        gradebook_btn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        gradebook_btn.setForeground(new java.awt.Color(204, 204, 204));
-        gradebook_btn.setText("Grade Book");
+        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         btn_admin.setBackground(new java.awt.Color(54, 33, 89));
 
@@ -180,7 +167,7 @@ public class Home extends javax.swing.JFrame {
             .addGroup(btn_adminLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(30, 30, 30)
                 .addComponent(chat_btn)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -192,67 +179,79 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(chat_btn))
         );
 
-        javax.swing.GroupLayout btn_comingsoonLayout = new javax.swing.GroupLayout(btn_comingsoon);
-        btn_comingsoon.setLayout(btn_comingsoonLayout);
-        btn_comingsoonLayout.setHorizontalGroup(
-            btn_comingsoonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btn_comingsoonLayout.createSequentialGroup()
-                .addGroup(btn_comingsoonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(btn_comingsoonLayout.createSequentialGroup()
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(gradebook_btn)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(btn_admin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        btn_comingsoonLayout.setVerticalGroup(
-            btn_comingsoonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(btn_comingsoonLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(btn_comingsoonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(gradebook_btn)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+        gradebook_area.setBackground(new java.awt.Color(54, 33, 89));
+        gradebook_area.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gradebook_areaMouseClicked(evt);
+            }
+        });
+
+        jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/secapp.dashboard.images/icons8_report_card_80px.png"))); // NOI18N
+
+        gradebook_btn.setBackground(new java.awt.Color(54, 33, 89));
+        gradebook_btn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        gradebook_btn.setForeground(new java.awt.Color(204, 204, 204));
+        gradebook_btn.setText("Grade Book");
+
+        javax.swing.GroupLayout gradebook_areaLayout = new javax.swing.GroupLayout(gradebook_area);
+        gradebook_area.setLayout(gradebook_areaLayout);
+        gradebook_areaLayout.setHorizontalGroup(
+            gradebook_areaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(gradebook_areaLayout.createSequentialGroup()
+                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btn_admin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(gradebook_btn)
+                .addContainerGap(92, Short.MAX_VALUE))
+        );
+        gradebook_areaLayout.setVerticalGroup(
+            gradebook_areaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(gradebook_areaLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(gradebook_areaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(gradebook_btn)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        pendingArea.setBackground(new java.awt.Color(54, 33, 89));
+        pendingArea.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pendingAreaMouseClicked(evt);
+            }
+        });
+
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/secapp.dashboard.images/icons8_knowledge_sharing_30px.png"))); // NOI18N
+
+        pendingTest_btn.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        pendingTest_btn.setForeground(new java.awt.Color(204, 204, 204));
+        pendingTest_btn.setText("Pending Tests");
+        pendingTest_btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pendingTest_btnMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pendingAreaLayout = new javax.swing.GroupLayout(pendingArea);
+        pendingArea.setLayout(pendingAreaLayout);
+        pendingAreaLayout.setHorizontalGroup(
+            pendingAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pendingAreaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(pendingTest_btn)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        pendingAreaLayout.setVerticalGroup(
+            pendingAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pendingAreaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(completedTest_btn)
-                .addContainerGap(76, Short.MAX_VALUE))
-            .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(btn_comingsoon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pendingAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pendingTest_btn)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addComponent(completedTest_btn)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_comingsoon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel17.setText("SECAPP");
-
-        jLabel20.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout sidepane2Layout = new javax.swing.GroupLayout(sidepane2);
         sidepane2.setLayout(sidepane2Layout);
@@ -264,7 +263,14 @@ public class Home extends javax.swing.JFrame {
             .addGroup(sidepane2Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(competedArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(sidepane2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(sidepane2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_admin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(gradebook_area, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pendingArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         sidepane2Layout.setVerticalGroup(
             sidepane2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -274,8 +280,14 @@ public class Home extends javax.swing.JFrame {
                 .addGap(11, 11, 11)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(11, 11, 11)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(249, Short.MAX_VALUE))
+                .addComponent(competedArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pendingArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(gradebook_area, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btn_admin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(280, Short.MAX_VALUE))
         );
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -288,7 +300,7 @@ public class Home extends javax.swing.JFrame {
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 552, Short.MAX_VALUE)
         );
 
         horizontalBar.setBackground(new java.awt.Color(80, 50, 115));
@@ -311,7 +323,7 @@ public class Home extends javax.swing.JFrame {
         horizontalBarLayout.setVerticalGroup(
             horizontalBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, horizontalBarLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(16, Short.MAX_VALUE)
                 .addComponent(lblTitle)
                 .addContainerGap())
         );
@@ -330,10 +342,14 @@ public class Home extends javax.swing.JFrame {
             bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bgLayout.createSequentialGroup()
                 .addComponent(horizontalBar, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sidepane2, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
-                    .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(bgLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bgLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(sidepane2, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -354,30 +370,50 @@ public class Home extends javax.swing.JFrame {
 
     private void completedTest_btnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_completedTest_btnMouseClicked
         // TODO add your handling code here:
-        completed.setVisible(true);
-        pending.setVisible(false);
-       answers.setVisible(false);
-       pending_Tests.setVisible(false);
+       // pendingArea.setBackground(Color.getHSBColor(54, 33, 89));
+       
     }//GEN-LAST:event_completedTest_btnMouseClicked
 
     private void pendingTest_btnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pendingTest_btnMouseClicked
         // TODO add your handling code here:
-        pendingTest_btn.setBackground(Color.getHSBColor(85,65,118));
+        
+    }//GEN-LAST:event_pendingTest_btnMouseClicked
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+    this.setExtendedState(MAXIMIZED_BOTH);
+    }//GEN-LAST:event_formWindowOpened
+
+    private void pendingAreaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pendingAreaMouseClicked
+        // TODO add your handling code here:
+        pendingArea.setBackground(new Color(126, 87, 194));
+        competedArea.setBackground(new Color(54,33,89));
+        gradebook_area.setBackground(new Color(54,33,89));
         //pending.setVisible(true);
          pending.setVisible(true);
          completed.setVisible(false);
          answers.setVisible(false);
          pending_Tests.setVisible(false);
-    }//GEN-LAST:event_pendingTest_btnMouseClicked
+    }//GEN-LAST:event_pendingAreaMouseClicked
 
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+    private void gradebook_areaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gradebook_areaMouseClicked
         // TODO add your handling code here:
-        this.setExtendedState(MAXIMIZED_BOTH);
-    }//GEN-LAST:event_formWindowOpened
+        gradebook_area.setBackground(new Color(126, 87, 194));
+        competedArea.setBackground(new Color(54,33,89));
+        pendingArea.setBackground(new Color(54,33,89));
+        
+    }//GEN-LAST:event_gradebook_areaMouseClicked
 
-    private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
+    private void competedAreaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_competedAreaMousePressed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPanel6MouseClicked
+         competedArea.setBackground(new Color(126, 87, 194));
+        pendingArea.setBackground(new Color(54,33,89));
+        completed.setVisible(true);
+        pending.setVisible(false);
+       answers.setVisible(false);
+       pending_Tests.setVisible(false);
+       
+    }//GEN-LAST:event_competedAreaMousePressed
 
     /**
      * @param args the command line arguments
@@ -409,11 +445,17 @@ public class Home extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Home().setVisible(true);
-                completed.setVisible(false);
+                Home home = new Home();
+                   completed.setVisible(false);
                 pending.setVisible(false);
-                answers.setVisible(false);
+                //answers.setVisible(false);
                 pending_Tests.setVisible(false);
+                home.setVisible(true);
+                home.setUndecorated(true);
+                home.setExtendedState(MAXIMIZED_BOTH);
+              
+                 
+    
             }
         });
     }
@@ -421,9 +463,10 @@ public class Home extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bg;
     private javax.swing.JPanel btn_admin;
-    private javax.swing.JPanel btn_comingsoon;
     private javax.swing.JLabel chat_btn;
+    private javax.swing.JPanel competedArea;
     private javax.swing.JLabel completedTest_btn;
+    private javax.swing.JPanel gradebook_area;
     private javax.swing.JLabel gradebook_btn;
     private javax.swing.JPanel horizontalBar;
     private javax.swing.JLabel jLabel11;
@@ -432,11 +475,10 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JPanel pendingArea;
     private javax.swing.JLabel pendingTest_btn;
     private javax.swing.JPanel sidepane2;
     // End of variables declaration//GEN-END:variables

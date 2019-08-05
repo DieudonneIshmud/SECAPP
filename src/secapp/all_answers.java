@@ -5,6 +5,11 @@
  */
 package secapp;
 
+import com.mongodb.client.MongoCollection;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JEditorPane;
+import org.bson.Document;
 /**
  *
  * @author Dieudo M
@@ -14,10 +19,46 @@ public class all_answers extends javax.swing.JPanel {
     /**
      * Creates new form all_answers
      */
-    public all_answers() {
+    ArrayList<String> arr;
+    public all_answers( ArrayList<String> arr) {
+        this.arr = arr;
+        
         initComponents();
         
+  
+        
+        
     }
+   private static void addMultipleDocuments(MongoCollection<Document> col) {
+
+		// Sample document.
+		Document emp2 = new Document();
+		emp2.put("name", "Charlotte Neil");
+		emp2.put("website", "webcodegeeks.com");
+
+		Document emp2_addr = new Document();
+		emp2_addr.put("addr_line1", "Fremont, AK");
+		emp2_addr.put("zip_code", "19408");
+		emp2.put("address", emp2_addr);
+
+		/* Sample document.
+		Document emp3 = new Document();
+		emp3.put("title", "Ms.");
+		emp3.put("name", "Samantha Greens");
+		emp3.put("website", "systemcodegeeks.com");
+
+		Document emp3_addr = new Document();
+		emp3_addr.put("addr_line1", "Cudahy, Ohio");
+		emp3_addr.put("zip_code", "31522");
+		emp3.put("address", emp3_addr);*/
+
+		// Adding documents to a list.
+		List<Document> docs = new ArrayList<Document>();
+		docs.add(emp2);
+		//docs.add(emp3);
+
+		col.insertMany(docs);
+	}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -31,7 +72,7 @@ public class all_answers extends javax.swing.JPanel {
         allAnswers = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jEditorPane1 = new javax.swing.JEditorPane();
+        answers_list = new javax.swing.JEditorPane();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -48,16 +89,17 @@ public class all_answers extends javax.swing.JPanel {
             }
         });
 
-        jEditorPane1.setText("This a list of all answered questions.. The Ones to be sent to the database");
-        jScrollPane1.setViewportView(jEditorPane1);
+        answers_list.setText("This a list of all answered questions.. The Ones to be sent to the database");
+        jScrollPane1.setViewportView(answers_list);
 
         javax.swing.GroupLayout allAnswersLayout = new javax.swing.GroupLayout(allAnswers);
         allAnswers.setLayout(allAnswersLayout);
         allAnswersLayout.setHorizontalGroup(
             allAnswersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, allAnswersLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 789, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -68,8 +110,9 @@ public class all_answers extends javax.swing.JPanel {
                 .addComponent(jButton1)
                 .addContainerGap(281, Short.MAX_VALUE))
             .addGroup(allAnswersLayout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jScrollPane1)
-                .addContainerGap())
+                .addGap(62, 62, 62))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -90,11 +133,17 @@ public class all_answers extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    public JEditorPane getAnswersList()
+    {
+        
+        return answers_list;
+        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel allAnswers;
+    private javax.swing.JEditorPane answers_list;
     private javax.swing.JButton jButton1;
-    private javax.swing.JEditorPane jEditorPane1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }

@@ -9,6 +9,8 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import java.awt.Color;
+import java.awt.Font;
 import java.net.UnknownHostException;
 import java.time.Instant;
 import java.util.Date;
@@ -72,11 +74,17 @@ public class Available_tests extends javax.swing.JPanel {
         btnStartTest = new javax.swing.JButton();
         button = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+
         Available.setBackground(new java.awt.Color(255, 255, 255));
         Available.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setBorder(null);
 
+        table.setBackground(new java.awt.Color(255, 255, 255));
+        table.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        table.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
@@ -88,6 +96,9 @@ public class Available_tests extends javax.swing.JPanel {
                 "", " ", "", "", "", ""
             }
         ));
+        table.setRowHeight(25);
+        table.setSelectionBackground(new java.awt.Color(122, 71, 221));
+        table.getTableHeader().setReorderingAllowed(false);
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tableMouseClicked(evt);
@@ -151,7 +162,8 @@ public class Available_tests extends javax.swing.JPanel {
         AvailableLayout.setHorizontalGroup(
             AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AvailableLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 846, Short.MAX_VALUE)
+                .addContainerGap(105, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -159,24 +171,24 @@ public class Available_tests extends javax.swing.JPanel {
             AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AvailableLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(AvailableLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 624, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AvailableLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(237, 237, 237))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Available, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(Available, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(Available, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(Available, javax.swing.GroupLayout.PREFERRED_SIZE, 419, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 211, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -201,7 +213,6 @@ public class Available_tests extends javax.swing.JPanel {
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         // TODO add your handling code here:
-
     }//GEN-LAST:event_tableMouseClicked
 
 
@@ -246,7 +257,7 @@ public class Available_tests extends javax.swing.JPanel {
     final void getData() {
         MongoCollection coll = db.getCollection("testq");
         documents = coll.find();
-        String[] columnNames = {"id", "Test description", "Course code", "Date", "Time", "Open/Closed"};
+        String[] columnNames = {"ID", "Test Description", "Course Code", "Date", "Time", "Open/Closed"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         int counter = 0;
         for (Document obj : documents) {
@@ -257,6 +268,8 @@ public class Available_tests extends javax.swing.JPanel {
             String duratation = (String) obj.get("Duration");
             ObjectId id = (ObjectId) obj.get("_id");
             model.addRow(new Object[]{id, testTitle, courseCode, date, duratation, openORclosed});
+            table.getTableHeader().setFont(new Font(Font.SERIF, Font.BOLD, 20));
+            table.getTableHeader().setBackground(new Color(122,71,221));
         }
         table.setModel(model);
     }

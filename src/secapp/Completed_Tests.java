@@ -34,11 +34,17 @@ public class Completed_Tests extends javax.swing.JPanel {
         setBackground(new java.awt.Color(255, 255, 255));
 
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setForeground(new java.awt.Color(0, 0, 0));
+        jScrollPane1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
+        jTable1.setAutoCreateRowSorter(true);
+        jTable1.setBackground(new java.awt.Color(255, 255, 255));
+        jTable1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jTable1.setForeground(new java.awt.Color(0, 0, 0));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"CS4001", "Test1", "Returned", null},
+                {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null},
                 {null, null, null, null}
@@ -46,12 +52,34 @@ public class Completed_Tests extends javax.swing.JPanel {
             new String [] {
                 "Course Code", "Title", "Status", "Marks"
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
         jTable1.setAlignmentX(0.9F);
         jTable1.setAlignmentY(0.9F);
+        jTable1.setGridColor(new java.awt.Color(255, 255, 255));
+        jTable1.setIntercellSpacing(new java.awt.Dimension(5, 5));
         jScrollPane1.setViewportView(jTable1);
+        if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(0).setResizable(false);
+            jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
+            jTable1.getColumnModel().getColumn(1).setResizable(false);
+            jTable1.getColumnModel().getColumn(1).setPreferredWidth(10);
+            jTable1.getColumnModel().getColumn(2).setResizable(false);
+            jTable1.getColumnModel().getColumn(2).setPreferredWidth(10);
+            jTable1.getColumnModel().getColumn(3).setResizable(false);
+            jTable1.getColumnModel().getColumn(3).setPreferredWidth(10);
+        }
 
+        jButton1.setBackground(new java.awt.Color(54, 33, 89));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("View GradeBook");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -64,25 +92,27 @@ public class Completed_Tests extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 800, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35)
                 .addComponent(jButton1)
-                .addContainerGap(232, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(110, 110, 110)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 327, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jButton1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        gradebook grade = new gradebook();
-        grade.setVisible(true);
+        //gradebook grade = new gradebook();
+        //grade.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
 

@@ -27,9 +27,20 @@ public class Test_finished extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
         btnSubmit = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+
+        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane2.setViewportView(jList1);
+
+        setBackground(new java.awt.Color(255, 255, 255));
 
         btnSubmit.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         btnSubmit.setText("Submit");
@@ -39,6 +50,7 @@ public class Test_finished extends javax.swing.JPanel {
             }
         });
 
+        jTextArea1.setBackground(new java.awt.Color(255, 255, 255));
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
@@ -47,19 +59,22 @@ public class Test_finished extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1)
-                .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(322, 322, 322)
-                .addComponent(btnSubmit)
-                .addContainerGap(401, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(322, 322, 322)
+                        .addComponent(btnSubmit))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 796, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(btnSubmit)
                 .addGap(4, 4, 4))
         );
@@ -73,7 +88,9 @@ public class Test_finished extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSubmit;
+    private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
