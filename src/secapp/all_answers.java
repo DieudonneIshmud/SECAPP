@@ -6,9 +6,15 @@
 package secapp;
 
 import com.mongodb.client.MongoCollection;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JEditorPane;
+import javax.swing.JOptionPane;
 import org.bson.Document;
 /**
  *
@@ -19,46 +25,24 @@ public class all_answers extends javax.swing.JPanel {
     /**
      * Creates new form all_answers
      */
+    private Document ToBePosted = null;
     ArrayList<String> arr;
-    public all_answers( ArrayList<String> arr) {
-        this.arr = arr;
-        
+    static Pending_Tests p;
+    
+    public all_answers( ) {
         initComponents();
-        
-  
-        
+        //displayAll();
+//        displayAll();
         
     }
-   private static void addMultipleDocuments(MongoCollection<Document> col) {
-
-		// Sample document.
-		Document emp2 = new Document();
-		emp2.put("name", "Charlotte Neil");
-		emp2.put("website", "webcodegeeks.com");
-
-		Document emp2_addr = new Document();
-		emp2_addr.put("addr_line1", "Fremont, AK");
-		emp2_addr.put("zip_code", "19408");
-		emp2.put("address", emp2_addr);
-
-		/* Sample document.
-		Document emp3 = new Document();
-		emp3.put("title", "Ms.");
-		emp3.put("name", "Samantha Greens");
-		emp3.put("website", "systemcodegeeks.com");
-
-		Document emp3_addr = new Document();
-		emp3_addr.put("addr_line1", "Cudahy, Ohio");
-		emp3_addr.put("zip_code", "31522");
-		emp3.put("address", emp3_addr);*/
-
-		// Adding documents to a list.
-		List<Document> docs = new ArrayList<Document>();
-		docs.add(emp2);
-		//docs.add(emp3);
-
-		col.insertMany(docs);
-	}
+   StringBuilder build =  new StringBuilder();
+    public void displayAll() {
+        p = Home.pending_Tests;
+       for (int i=0;i<p.questionsDocs.size();i++)
+     build.append("Question "+(i+1)+ "\n"+p.getprevAnswer(i)+"\n\n");
+         listOfAnsers.setText(build.toString());
+    }
+  
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -70,49 +54,52 @@ public class all_answers extends javax.swing.JPanel {
     private void initComponents() {
 
         allAnswers = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        submit_button = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        answers_list = new javax.swing.JEditorPane();
+        listOfAnsers = new javax.swing.JTextArea();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
 
         allAnswers.setBackground(new java.awt.Color(255, 255, 255));
 
-        jButton1.setBackground(new java.awt.Color(54, 33, 89));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Submit");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        submit_button.setBackground(new java.awt.Color(54, 33, 89));
+        submit_button.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        submit_button.setForeground(new java.awt.Color(255, 255, 255));
+        submit_button.setText("Submit");
+        submit_button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                submit_buttonActionPerformed(evt);
             }
         });
 
-        answers_list.setText("This a list of all answered questions.. The Ones to be sent to the database");
-        jScrollPane1.setViewportView(answers_list);
+        listOfAnsers.setBackground(new java.awt.Color(255, 255, 255));
+        listOfAnsers.setColumns(20);
+        listOfAnsers.setRows(5);
+        jScrollPane1.setViewportView(listOfAnsers);
 
         javax.swing.GroupLayout allAnswersLayout = new javax.swing.GroupLayout(allAnswers);
         allAnswers.setLayout(allAnswersLayout);
         allAnswersLayout.setHorizontalGroup(
             allAnswersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, allAnswersLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 789, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addContainerGap())
+            .addGroup(allAnswersLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 751, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(submit_button)
+                .addContainerGap(32, Short.MAX_VALUE))
         );
         allAnswersLayout.setVerticalGroup(
             allAnswersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(allAnswersLayout.createSequentialGroup()
-                .addGap(241, 241, 241)
-                .addComponent(jButton1)
-                .addContainerGap(281, Short.MAX_VALUE))
-            .addGroup(allAnswersLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
-                .addGap(62, 62, 62))
+                .addGroup(allAnswersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(allAnswersLayout.createSequentialGroup()
+                        .addGap(163, 163, 163)
+                        .addComponent(submit_button))
+                    .addGroup(allAnswersLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 384, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(173, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -129,21 +116,65 @@ public class all_answers extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void submit_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submit_buttonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    public JEditorPane getAnswersList()
-    {
-        
-        return answers_list;
-        
+         //JOptionPane.showMessageDialog(null, "Are you sure You want to Submit?");
+        // sendAnswers();
+       
+        try {
+            deleteFiles();
+        } catch (IOException ex) {
+            Logger.getLogger(all_answers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_submit_buttonActionPerformed
+    public void sendToDB (){
+         for (int i=0; i<p.questionsDocs.size();i++){
+         String [] options = listOfAnsers.getText().split("\\r?\\n");
+        // String ans[] = string.split("\\r?\\n");
+            String answer  = options[i];
+            System.out.println(options);
+//            option1.setText(options[0]);
+//            option2.setText(options[1]);
+//            option3.setText(options[2]);
+//            option4.setText(options[3]);
+         }
     }
+   
+    public void sendAnswers(){
+        //List<DBobject> data = new ArrayList<>();
+        //int dialogResult = JOptionPane.showConfirmDialog(null, "Would You Like to Save your Previous Note First?", "Warning", dialogButton);
+       // if (dialogResult == JOptionPane.YES_OPTION) {
+            // Saving code here
+        //}
+        
+        MongoCollection coll = MongoUtil.getCollection("testa");
+ 
+        Document student = new Document();
+        
+        student.put("Title", "");
+        student.put("course_code", "FT/PT");
+        student.put("studentID", "Harish Taware");
+        
+
+        Document answers = new Document();
+        answers.put("Qno", "CIDCO");
+        answers.put("answer", "Aurangabad");
+
+        student.put("address", answers);
+        coll.insertOne(student);
+    }
+    public void deleteFiles() throws IOException{
+        for (int i=0;i<p.questionsDocs.size();i++){
+            Files.deleteIfExists(Paths.get("C:\\Users\\Dieudo M\\Documents\\NetBeansProjects\\SECAPP\\+" + p.questionsDocs.get(i)+ ".txt"));
+ 
+        }  
+    }
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel allAnswers;
-    private javax.swing.JEditorPane answers_list;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea listOfAnsers;
+    private javax.swing.JButton submit_button;
     // End of variables declaration//GEN-END:variables
 }

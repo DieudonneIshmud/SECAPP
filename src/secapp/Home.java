@@ -23,6 +23,7 @@ public class Home extends javax.swing.JFrame {
      static Available_tests pending;
      static all_answers answers;
      static Pending_Tests pending_Tests;
+     static Gradebook gradebook;
     
      
      
@@ -38,6 +39,10 @@ public class Home extends javax.swing.JFrame {
         pending = new Available_tests();
        // answers =  new all_answers();
         pending_Tests = new Pending_Tests();
+        gradebook =  new Gradebook();
+        setExtendedState(MAXIMIZED_BOTH);
+        
+        
         mainPanel.setLayout(layout);
         // 75%
         GridBagConstraints c =  new GridBagConstraints();
@@ -57,7 +62,9 @@ public class Home extends javax.swing.JFrame {
          mainPanel.add(pending_Tests,c);
         c.gridx =0;
         c.gridy=0;
+        mainPanel.add(gradebook,c);
         pending_Tests.setVisible(false);
+        gradebook.setVisible(false);
     }
 
     /**
@@ -184,6 +191,9 @@ public class Home extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 gradebook_areaMouseClicked(evt);
             }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                gradebook_areaMousePressed(evt);
+            }
         });
 
         jLabel13.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -287,7 +297,7 @@ public class Home extends javax.swing.JFrame {
                 .addComponent(gradebook_area, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btn_admin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(280, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         mainPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -300,7 +310,7 @@ public class Home extends javax.swing.JFrame {
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 552, Short.MAX_VALUE)
+            .addGap(0, 589, Short.MAX_VALUE)
         );
 
         horizontalBar.setBackground(new java.awt.Color(80, 50, 115));
@@ -342,14 +352,13 @@ public class Home extends javax.swing.JFrame {
             bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(bgLayout.createSequentialGroup()
                 .addComponent(horizontalBar, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(bgLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(bgLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(sidepane2, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, bgLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sidepane2, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -392,8 +401,9 @@ public class Home extends javax.swing.JFrame {
         //pending.setVisible(true);
          pending.setVisible(true);
          completed.setVisible(false);
-         answers.setVisible(false);
+         //answers.setVisible(true);
          pending_Tests.setVisible(false);
+         
     }//GEN-LAST:event_pendingAreaMouseClicked
 
     private void gradebook_areaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gradebook_areaMouseClicked
@@ -412,8 +422,23 @@ public class Home extends javax.swing.JFrame {
         pending.setVisible(false);
        answers.setVisible(false);
        pending_Tests.setVisible(false);
+       gradebook.setVisible(false);
        
     }//GEN-LAST:event_competedAreaMousePressed
+
+    private void gradebook_areaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gradebook_areaMousePressed
+        // TODO add your handling code here:
+        gradebook_area.setBackground(new Color(126, 87, 194));
+        competedArea.setBackground(new Color(54,33,89));
+        pendingArea.setBackground(new Color(54,33,89));
+        gradebook.setVisible(true);
+        completed.setVisible(false);
+        pending.setVisible(false);
+       answers.setVisible(false);
+       pending_Tests.setVisible(false);
+       
+        
+    }//GEN-LAST:event_gradebook_areaMousePressed
 
     /**
      * @param args the command line arguments
@@ -443,19 +468,18 @@ public class Home extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+        MongoUtil.connect(); 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Home home = new Home();
-                   completed.setVisible(false);
-                pending.setVisible(false);
-                //answers.setVisible(false);
-                pending_Tests.setVisible(false);
+                //private Home home = new Home();s
+                Home home =  new Home();   
                 home.setVisible(true);
-                home.setUndecorated(true);
-                home.setExtendedState(MAXIMIZED_BOTH);
-              
-                 
-    
+                completed.setVisible(false);
+                pending.setVisible(false);
+                pending_Tests.setVisible(false);
+                answers.setVisible(false);
+                //home.setUndecorated(true);
+                
             }
         });
     }

@@ -5,26 +5,30 @@
  */
 package secapp;
 
-import javax.swing.JEditorPane;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
-import com.mongodb.client.FindIterable;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
-import com.mongodb.client.MongoDatabase;
+import static com.mongodb.client.model.Filters.text;
+import static com.mongodb.client.model.Filters.text;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.Timer;
-import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import jdk.nashorn.internal.runtime.options.Options;
+import static org.bouncycastle.asn1.x500.style.RFC4519Style.title;
 /**
  *
  * @author Dieudo M
@@ -40,59 +44,118 @@ public class Pending_Tests extends javax.swing.JPanel {
     static all_answers answers;
     static Completed_Tests completed;
     ArrayList<String> arr;
-    private MongoClient mongoClient = null;
-    private FindIterable<Document> documents = null;
-
-    private MongoDatabase db = null;
-    private List<Document> QuestionsList;
+    ArrayList<File> savedAnswers;
+    String file_name = "test.txt";
+  
+//    private MongoClient mongoClient = null;
+//    private FindIterable<Document> documents = null;
+//    
+//    private MongoDatabase db = null;
+//    private Object[] QuestionsList;
+    private Document testDocument = null;
     
+    int current_question = 0;
+    int anInstruction = 0;
+    List<Document> questionsDocs;
+    List<Document> instructionsDocs;
     /**
      * Creates new form Pending_Tests
      */
     public Pending_Tests() {
         initComponents();
-        q2_btn.setVisible(false) ;
-        q3_btn.setVisible(false);
-        q4_btn.setVisible(false);
-        finishButton.setVisible(false);
-        //QuestionsDetails();
-//        btnPrevious.setVisible(false);
-        //completed =  new Completed_Tests();
-GridBagLayout layout =  new GridBagLayout();
-        //completed =  new Completed_Tests();
-        //pending = new Pending_Tests();
-        arr = new ArrayList<String>();
-        answers =  new all_answers(arr); //  all_answers(arr);;
-    questionDisplay.setLayout(layout);
-//        // 75%
-GridBagConstraints c =  new GridBagConstraints();
-c.gridx =0;
-c.gridy=0;
-questionDisplay.add(answers,c);
-answers.setVisible(false);
-//        c.gridx =0;
-//        c.gridy=0;
+      
+        //finishButton.setVisible(false);
+         
+        answers =  new all_answers();
+        GridBagLayout layout = new GridBagLayout();
+        questionDisplay.setLayout(layout);
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = 0;
+        c.gridy = 0;
+        //JOptionPane.showMessageDialog(null, "questioDisplay is+" + longANDshort_answer + " answer is " + answers);
+        questionDisplay.add(answers, c);
+        answers.setVisible(false);
+       c.gridx =0;
+       c.gridy=0;
     }
      public void displayTime(int min, int sec){
         String minute = String.format("%02d",min);
         String second = (String.format("%02d",sec));
         count.setText(minute + ":" + second);
     }
-     public void startCountdown(String time, String message){
+     public void startCountdown(String time, Document testDocument){
+         System.out.println(testDocument.toString());
+        this.testDocument = testDocument;
+        questionsDocs = (List<Document>) testDocument.get("Questions");
+        setUpFiles();
         this.time = convertTimeToInt(time.split(":"));
-        this.message.setText(message);
+        this.message.setText(testDocument.getString("Title"));
         count.setText(time);
         timer = new Timer(1000,new TimerListener());
         timer.setRepeats(true);
         timer.start();
-
+        displayQuestions();
     }
+     
+     public void setUpFiles(){
+        savedAnswers = new ArrayList<>(questionsDocs.size());
+        for(int i =0; i< questionsDocs.size(); ++i){
+            ///look into appdata for windows
+            File temp =  new File("./.question"+i);
+            try {
+                temp.createNewFile();
+            } catch (IOException ex) {
+                Logger.getLogger(Pending_Tests.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            savedAnswers.add(temp);
+        }
+     }
+      public void Title(String t) {
+       String Title = testDocument.getString("Title");
+		Title = t;
+	}
+	
+	public void courseCODE(String CC) {
+        String CourseCode = testDocument.getString("course_code");
+		CourseCode = CC;
+	}
      public int[] convertTimeToInt(String[] time){
         int[] converted = new int[time.length];
         for(int i = 0; i<time.length; i++){
             converted[i] = Integer.valueOf(time[i]);
         }
         return converted;
+    }
+     
+    public String getprevAnswer(int index){
+         StringBuilder answer = new StringBuilder("");
+         try{
+             BufferedReader br = new BufferedReader(new FileReader(savedAnswers.get(index)));
+             String curr = br.readLine();
+             while(curr!=null&&!curr.isEmpty()){
+                 answer.append(curr);
+                 curr = br.readLine();
+             }
+             
+         } catch (FileNotFoundException ex ) {
+            Logger.getLogger(Pending_Tests.class.getName()).log(Level.SEVERE, null, ex);
+         }catch(IOException ex){}
+         return answer.toString();
+   }
+    
+    /**
+     * This method return the string on the selected JOption Pane
+     * @param questionNumber the question that we want to retrieve the answer for
+     * @param selectedOption the option that was selected.
+     * @return returns the string in the selected option if the questions is mcq otherwise returns and empty string
+     */
+    public String mapOption(int questionNumber, int selectedOption){
+        Document document = questionsDocs.get(questionNumber);
+        if(document.getString("QType").equalsIgnoreCase("mcq")){
+            String answer_options = document.getString("options");
+            return answer_options.split("\\.")[selectedOption];
+        }
+        return "";
     }
      private class TimerListener implements ActionListener {
         @Override
@@ -125,19 +188,22 @@ answers.setVisible(false);
 
         questionDisplay = new javax.swing.JPanel();
         questions = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        question_area = new javax.swing.JTextArea();
         jLabel2 = new javax.swing.JLabel();
-        answer_area = new javax.swing.JTextField();
         btnNext = new javax.swing.JButton();
         btnPrevious = new javax.swing.JButton();
         message = new javax.swing.JLabel();
-        q1_btn = new javax.swing.JButton();
-        q2_btn = new javax.swing.JButton();
-        q3_btn = new javax.swing.JButton();
-        q4_btn = new javax.swing.JButton();
         finishButton = new javax.swing.JButton();
         questionNumber = new javax.swing.JLabel();
+        answer_panel = new javax.swing.JPanel();
+        MCQpanel = new javax.swing.JPanel();
+        option1 = new javax.swing.JRadioButton();
+        option2 = new javax.swing.JRadioButton();
+        option3 = new javax.swing.JRadioButton();
+        option4 = new javax.swing.JRadioButton();
+        longANDshort_answer = new javax.swing.JScrollPane();
+        answer_area = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        question_area = new javax.swing.JTextArea();
         count = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -146,24 +212,8 @@ answers.setVisible(false);
 
         questions.setBackground(new java.awt.Color(255, 255, 255));
 
-        question_area.setEditable(false);
-        question_area.setBackground(new java.awt.Color(255, 255, 255));
-        question_area.setColumns(20);
-        question_area.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        question_area.setForeground(new java.awt.Color(51, 0, 51));
-        question_area.setRows(5);
-        question_area.setText("\"Running a\n program on a super computer with a certain amount of ressources \ndoes not garanty high performance \"Explain");
-        jScrollPane1.setViewportView(question_area);
-
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Answer");
-
-        answer_area.setBackground(new java.awt.Color(255, 255, 255));
-        answer_area.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                answer_areaActionPerformed(evt);
-            }
-        });
 
         btnNext.setBackground(new java.awt.Color(54, 33, 89));
         btnNext.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -188,46 +238,6 @@ answers.setVisible(false);
         message.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         message.setText("Message");
 
-        q1_btn.setBackground(new java.awt.Color(54, 33, 89));
-        q1_btn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        q1_btn.setForeground(new java.awt.Color(255, 255, 255));
-        q1_btn.setText("Q1");
-        q1_btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                q1_btnActionPerformed(evt);
-            }
-        });
-
-        q2_btn.setBackground(new java.awt.Color(54, 33, 89));
-        q2_btn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        q2_btn.setForeground(new java.awt.Color(255, 255, 255));
-        q2_btn.setText("Q2");
-        q2_btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                q2_btnActionPerformed(evt);
-            }
-        });
-
-        q3_btn.setBackground(new java.awt.Color(54, 33, 89));
-        q3_btn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        q3_btn.setForeground(new java.awt.Color(255, 255, 255));
-        q3_btn.setText("Q3");
-        q3_btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                q3_btnActionPerformed(evt);
-            }
-        });
-
-        q4_btn.setBackground(new java.awt.Color(54, 33, 89));
-        q4_btn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        q4_btn.setForeground(new java.awt.Color(255, 255, 255));
-        q4_btn.setText("Q4");
-        q4_btn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                q4_btnActionPerformed(evt);
-            }
-        });
-
         finishButton.setBackground(new java.awt.Color(54, 33, 89));
         finishButton.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         finishButton.setForeground(new java.awt.Color(255, 255, 255));
@@ -241,7 +251,64 @@ answers.setVisible(false);
         questionNumber.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         questionNumber.setText("Question 1/4");
 
-        count.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        answer_panel.setLayout(new java.awt.CardLayout());
+
+        MCQpanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        option1.setText("jRadioButton1");
+
+        option2.setText("jRadioButton2");
+        option2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                option2ActionPerformed(evt);
+            }
+        });
+
+        option3.setText("jRadioButton3");
+
+        option4.setText("jRadioButton4");
+
+        javax.swing.GroupLayout MCQpanelLayout = new javax.swing.GroupLayout(MCQpanel);
+        MCQpanel.setLayout(MCQpanelLayout);
+        MCQpanelLayout.setHorizontalGroup(
+            MCQpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MCQpanelLayout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addGroup(MCQpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(option4)
+                    .addComponent(option2)
+                    .addComponent(option1)
+                    .addComponent(option3))
+                .addGap(550, 550, 550))
+        );
+        MCQpanelLayout.setVerticalGroup(
+            MCQpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(MCQpanelLayout.createSequentialGroup()
+                .addGap(29, 29, 29)
+                .addComponent(option1)
+                .addGap(18, 18, 18)
+                .addComponent(option2)
+                .addGap(18, 18, 18)
+                .addComponent(option3)
+                .addGap(18, 18, 18)
+                .addComponent(option4)
+                .addContainerGap(61, Short.MAX_VALUE))
+        );
+
+        answer_panel.add(MCQpanel, "MCQ");
+
+        answer_area.setBackground(new java.awt.Color(255, 255, 255));
+        answer_area.setColumns(20);
+        answer_area.setRows(5);
+        longANDshort_answer.setViewportView(answer_area);
+
+        answer_panel.add(longANDshort_answer, "Long_answer");
+
+        question_area.setColumns(20);
+        question_area.setRows(5);
+        jScrollPane2.setViewportView(question_area);
+
+        count.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         count.setText("0:0");
 
         javax.swing.GroupLayout questionsLayout = new javax.swing.GroupLayout(questions);
@@ -252,36 +319,27 @@ answers.setVisible(false);
                 .addGap(18, 18, 18)
                 .addComponent(btnPrevious)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(questionsLayout.createSequentialGroup()
-                        .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(answer_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(questionsLayout.createSequentialGroup()
+                        .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(questionsLayout.createSequentialGroup()
-                                .addComponent(q1_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(74, 74, 74)
-                                .addComponent(q2_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(82, 82, 82)
-                                .addComponent(q3_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(72, 72, 72)
-                                .addComponent(q4_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(questionNumber))
+                                .addComponent(questionNumber)
+                                .addGap(492, 492, 492)
+                                .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(message))
+                            .addGroup(questionsLayout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(755, 755, 755))
+                            .addComponent(jScrollPane2))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsLayout.createSequentialGroup()
-                                .addComponent(message)
-                                .addGap(154, 154, 154))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsLayout.createSequentialGroup()
-                                .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(234, 234, 234))))
-                    .addComponent(answer_area)
-                    .addGroup(questionsLayout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnNext)
-                .addContainerGap())
+                        .addComponent(btnNext)
+                        .addGap(86, 86, 86))))
             .addGroup(questionsLayout.createSequentialGroup()
-                .addGap(435, 435, 435)
+                .addGap(276, 276, 276)
                 .addComponent(finishButton, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -289,39 +347,29 @@ answers.setVisible(false);
             questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsLayout.createSequentialGroup()
                 .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(questionNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(questionsLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(questionNumber, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(20, 20, 20)
-                        .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(q1_btn)
-                            .addComponent(q2_btn)
-                            .addComponent(q3_btn)
-                            .addComponent(q4_btn)))
-                    .addGroup(questionsLayout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(message)))
+                            .addComponent(message)
+                            .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnNext)
-                        .addGap(59, 59, 59))
                     .addGroup(questionsLayout.createSequentialGroup()
-                        .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(questionsLayout.createSequentialGroup()
-                                .addGap(55, 55, 55)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(questionsLayout.createSequentialGroup()
-                                .addGap(87, 87, 87)
-                                .addComponent(btnPrevious)))
+                        .addGap(115, 115, 115)
+                        .addGroup(questionsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnPrevious)
+                            .addComponent(btnNext))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, questionsLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(answer_area, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(answer_panel, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(finishButton)
-                .addContainerGap(305, Short.MAX_VALUE))
+                .addGap(338, 338, 338))
         );
 
         javax.swing.GroupLayout questionDisplayLayout = new javax.swing.GroupLayout(questionDisplay);
@@ -335,7 +383,7 @@ answers.setVisible(false);
         questionDisplayLayout.setVerticalGroup(
             questionDisplayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(questionDisplayLayout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addGap(40, 40, 40)
                 .addComponent(questions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -351,171 +399,217 @@ answers.setVisible(false);
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(questionDisplay, javax.swing.GroupLayout.PREFERRED_SIZE, 662, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    // THIS ARE THE CONNECTION DETAILS TO MONGODB.... needs to be put in a public method
-    //public static void connectionMongo (){
-        
-//    int port_no = 27017;
-//	String host_name = "localhost", db_name = "SECAPP", db_coll_name = "testa";
-//        String client_url = "mongodb://" + host_name + ":" + port_no + "/" + db_name;
-//        MongoClientURI uri = new MongoClientURI(client_url);
-//    MongoClient mongo_client = new MongoClient(uri);
-//    MongoDatabase db = mongo_client.getDatabase(db_name);
-//                MongoCollection<Document> coll = db.getCollection(db_coll_name);
-//        
-    //}
     
-                // Fetching the database from the mongodb.
-                
-		
-    
-    
-    private void q1_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_q1_btnActionPerformed
-        // TODO add your handling code here:
-        //String value  = coll.find().projection(Projections.include("answer")).first().getString("answer"); // Optiom 1
-        //question_area.setText(value);
-       
-        
-    }//GEN-LAST:event_q1_btnActionPerformed
-
-    private void q2_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_q2_btnActionPerformed
-        // TODO add your handling code here:
-        //String question2 = QuestionsList.get(1).toJson(); // Givinga an error because a Document cannot convert into String.
-        //question_area.setText(question2);
-    }//GEN-LAST:event_q2_btnActionPerformed
-
-    private void q3_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_q3_btnActionPerformed
-        // TODO add your handling code here:
-        String question3 =  "This is question three";
-        question_area.setText(question3);
-    }//GEN-LAST:event_q3_btnActionPerformed
-
-    private void q4_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_q4_btnActionPerformed
-        // TODO add your handling code here:
-        String question4 =  "This is question four";
-        question_area.setText(question4);
-    }//GEN-LAST:event_q4_btnActionPerformed
-
-    private void answer_areaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_answer_areaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_answer_areaActionPerformed
-    static String question1,answer1;
+        static String question1,answer1;
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         // TODO add your handling code here:
         //btnNext.setVisible();
-        q1_btn.setVisible(false);
-        q2_btn.setVisible(true);
-        question1 = question_area.getText();
-        answer1 = answer_area.getText();
-        arr.add(answer1);
+        try {
+            // TODO add your handling code here:
+            saveToFile(current_question);
+        } catch (IOException ex) {
+            Logger.getLogger(Pending_Tests.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        nextQuesiton();
+     
         questions.setVisible(true);
-        questionNumber.setText("Question 2/2");
         //question_area.setText("");
-        question_area.setText(" This is the second Test");
         btnPrevious.setVisible(true);
         finishButton.setVisible(true);
-        
-      //  if (answer_area)
-        
-        
         
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void btnPreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreviousActionPerformed
-        // TODO add your handling code here:
-        questions.setVisible(true);
-         questionNumber.setText("AJFJFAF");
-        String q2 = q2_btn.getText();
-        String answer2 = question_area.getText();
-        question_area.setText(question1);
-        answer_area.setText(answer1);
-       btnNext.setVisible(true);
-        
+        try {
+            // TODO add your handling code here:
+            saveToFile(current_question);
+        } catch (IOException ex) {
+            Logger.getLogger(Pending_Tests.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        displayPreviousQuestion();
     }//GEN-LAST:event_btnPreviousActionPerformed
  public static final String NEW_LINE = System.getProperty("line.separator");
     private void finishButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_finishButtonActionPerformed
         // TODO add your handling code here:
+        
         questions.setVisible(false);
         answers.setVisible(true);
         
-         String q2 = q2_btn.getText();
-        String answer2 = answer_area.getText();
-        arr.add(answer2);
-        
-        JEditorPane ansList = answers.getAnswersList();
-        String all = null;
-        for(int i = 0; i < arr.size(); i++) {   
+        //String answer2 = answer_area.getText();
+        //arr.add(answer2);
+        try {
+            saveToFile(current_question);
             
-            all += arr.get(i)+"\n\r";                 
-        //System.out.println(arr.get(i));
-} 
-        ansList.setText(all);
-boolean hasNewline = all.contains(NEW_LINE);
-            if (hasNewline){
-                
-            }
+            //  if (answer_area)
+        } catch (IOException ex) {
+            Logger.getLogger(Pending_Tests.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+//        JEditorPane ansList = answers.getAnswersList();
+//        String all = null;
+//        for(int i = 0; i < arr.size(); i++) {   
+//            
+//            all += arr.get(i)+"\n\r";                 
+//        System.out.println(arr.get(i));
+//} 
+//        ansList.setText(all);
+//boolean hasNewline = all.contains(NEW_LINE);
+//            if (hasNewline){
+//                
+//            }
+        answers.displayAll();
 
-         
-        
-        
-       //
-       //questions.setVisible(false);
-       
     }//GEN-LAST:event_finishButtonActionPerformed
 
-    final void connect() {
-        mongoClient = new MongoClient("localhost", 27017);
-        db = mongoClient.getDatabase("SECAPP");
-    }
-    
-    final void disconnect(){
-        mongoClient.close();
-    }
-    
-    final void QuestionsDetails() {
-        MongoCollection coll = db.getCollection("testq");
-        documents = coll.find();
-        String[] questionDetails = {"id", "Test description", "Course code", "Date", "Time", "Open/Closed"};
-        //DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-        int counter = 0;
-        for (Document obj : documents) {
-            String questionNumber = (String) obj.get("QNo");
-            String questionType = (String) obj.get("QType");
-            //Date date = getDate((String) obj.get("Date"));
-            String questionText = (String) obj.get("QText");
-            String duratation = (String) obj.get("Duration");
-            System.out.println(questionNumber + " " + questionType+ " " + questionText);
-            //ObjectId id = (ObjectId) obj.get("_id");
-            //model.addRow(new Object[]{id, testTitle, courseCode, date, duratation, openORclosed});
-          QuestionsList = (List<Document>)obj.get("Questions");
-          
-               
-          //out.println(list.get(0)); // display specific field
+    private void option2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_option2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_option2ActionPerformed
 
+    public void nextQuesiton(){
+        ++current_question;
+        displayQuestions();
+    }
+    public void displayQuestions() {
+       // question_area.requestFocusInWindow();
+        Document nextQuestion = questionsDocs.get(current_question);
+//        question_area.setText("");
+        question_area.setText(nextQuestion.getString("Qtext"));
+        questionTyp = nextQuestion.getString("QType");
+        String answer_options = nextQuestion.getString("options");
+        questionNumber.setText("Question "+(current_question+1)+"/"+questionsDocs.size());
+        btnNext.setEnabled(current_question<questionsDocs.size()-1);
+        btnPrevious.setEnabled(current_question>=1);
+        if(!btnNext.isEnabled())
+            finishButton.setVisible(true);
+         CardLayout card = (CardLayout)answer_panel.getLayout();
+        //System.out.println(nextQuestion);
+        //System.out.println(answer_options);
+        
+        
+        if(questionTyp.equalsIgnoreCase("long")|| questionTyp.equalsIgnoreCase("short")){
+            //not multiplichoice so show text area
+           card.show(answer_panel, "Long_answer");
+           String answer = getprevAnswer(current_question);   
+           answer_area.setText(answer);
+        }else{
+            //multiple choice so show JCOMbo
+            card.show(answer_panel, "MCQ");
+            setMCQChoices(answer_options);
+            setMCQSavedOtions();
         }
-        System.out.println(Arrays.toString(QuestionsList.toArray()));
     }
     
+    public void setMCQSavedOtions(){
+           String prevAns = getprevAnswer(current_question);
+            if(!prevAns.isEmpty()){
+                int option = Integer.parseInt(prevAns);
+                switch(option){
+                    case 1:
+                        option1.setSelected(true);
+                        break;
+                    case 2:
+                        option2.setSelected(true);
+                        break;
+                    case 3:
+                        option3.setSelected(true);
+                        break;
+                    case 4:
+                        option4.setSelected(true);
+                }
+        }
+    }
+   
+    public void displayInstructions(){
+        
+    }
+     String questionTyp;
+    public void saveToFile(int index) throws IOException{
+            FileWriter fw = new FileWriter(savedAnswers.get(current_question));
+            if(questionTyp.equalsIgnoreCase("mcq")){
+                if(option1.isSelected()){
+                    JOptionPane.showMessageDialog(null, "Selected pane is "+1);
+                    fw.write(option1.getText());
+                }
+                else if(option2.isSelected()){
+                    JOptionPane.showMessageDialog(null, "Selected pane is "+2);
+                    fw.write(option2.getText());
+                }
+                else if(option3.isSelected()){
+                    JOptionPane.showMessageDialog(null, "Selected pane is "+3); 
+                    fw.write(option3.getText());
+                }
+                else if(option4.isSelected()){
+                    JOptionPane.showMessageDialog(null, "Selected option is option"+4);
+                    fw.write(option4.getText());
+                }
+                else
+                    fw.write("");
+            }else{
+                fw.write(answer_area.getText());
+            }
+            fw.flush();
+            fw.close();
+    }
     
+    private void displayPreviousQuestion() {
+        Document nextQuestion = questionsDocs.get(--current_question-1);
+        question_area.setText(nextQuestion.getString("Qtext"));
+        questionTyp = nextQuestion.getString("QType");
+        String answer_options = nextQuestion.getString("options");
+        questionNumber.setText("Question "+current_question+"/"+questionsDocs.size());
+        btnPrevious.setEnabled(current_question>1);
+        btnNext.setEnabled(current_question<questionsDocs.size());
+        System.out.println(nextQuestion);
+        
+        CardLayout card = (CardLayout)answer_panel.getLayout();
+        if(questionTyp.equalsIgnoreCase("long")|| questionTyp.equalsIgnoreCase("short")){
+            //not multiplichoice so show text area
+            JOptionPane.showMessageDialog(null, "Long");
+           card.show(answer_panel, "Long_answer");
+           String answer = getprevAnswer(current_question);   
+           answer_area.setText(answer);
+        }else{
+           // JOptionPane.showMessageDialog(null, "MCQ");
+            //multiple choice so show JCOMbo
+            card.show(answer_panel, "MCQ");
+            setMCQChoices(answer_options);
+            setMCQSavedOtions();
+           
+        }
+    }
+    
+    public void setMCQChoices(String answer_options){
+        
+         String [] options = answer_options.split("\\.");
+            
+            option1.setText(options[0]);
+            option2.setText(options[1]);
+            option3.setText(options[2]);
+            option4.setText(options[3]);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField answer_area;
+    private javax.swing.JPanel MCQpanel;
+    private javax.swing.JTextArea answer_area;
+    private javax.swing.JPanel answer_panel;
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrevious;
     private javax.swing.JLabel count;
     private javax.swing.JButton finishButton;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane longANDshort_answer;
     private javax.swing.JLabel message;
-    private javax.swing.JButton q1_btn;
-    private javax.swing.JButton q2_btn;
-    private javax.swing.JButton q3_btn;
-    private javax.swing.JButton q4_btn;
+    private javax.swing.JRadioButton option1;
+    private javax.swing.JRadioButton option2;
+    private javax.swing.JRadioButton option3;
+    private javax.swing.JRadioButton option4;
     private javax.swing.JPanel questionDisplay;
     private javax.swing.JLabel questionNumber;
     private javax.swing.JTextArea question_area;

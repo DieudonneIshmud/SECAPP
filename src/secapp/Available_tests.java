@@ -5,13 +5,12 @@
  */
 package secapp;
 
-import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import java.awt.Color;
-import java.awt.Font;
-import java.net.UnknownHostException;
+import com.mongodb.client.model.Filters;
+import java.awt.Dimension;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.logging.Level;
@@ -21,6 +20,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 /**
@@ -29,10 +29,6 @@ import org.bson.types.ObjectId;
  */
 public class Available_tests extends javax.swing.JPanel {
 
-    private MongoClient mongoClient = null;
-    private FindIterable<Document> documents = null;
-
-    private MongoDatabase db = null;
     /**
      * Creates new form Available_tests
      */
@@ -41,7 +37,6 @@ public class Available_tests extends javax.swing.JPanel {
 
     public Available_tests() {
         initComponents();
-        connect();
         getData();
         //JPanel panel = new JPanel(new BorderLayout());
         //JButton button = new JButton("Show Data");
@@ -68,50 +63,21 @@ public class Available_tests extends javax.swing.JPanel {
     private void initComponents() {
 
         Available = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        table = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         btnStartTest = new javax.swing.JButton();
         button = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
         Available.setBackground(new java.awt.Color(255, 255, 255));
         Available.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
-        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
-        jScrollPane1.setBorder(null);
-
-        table.setBackground(new java.awt.Color(255, 255, 255));
-        table.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        table.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        table.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
-            },
-            new String [] {
-                "", " ", "", "", "", ""
-            }
-        ));
-        table.setRowHeight(25);
-        table.setSelectionBackground(new java.awt.Color(122, 71, 221));
-        table.getTableHeader().setReorderingAllowed(false);
-        table.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tableMouseClicked(evt);
-            }
-        });
-        table.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                tablePropertyChange(evt);
-            }
-        });
-        jScrollPane1.setViewportView(table);
-        table.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.getSelectionModel().addListSelectionListener(createSelectionListener());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -154,28 +120,78 @@ public class Available_tests extends javax.swing.JPanel {
                 .addComponent(btnStartTest)
                 .addGap(40, 40, 40)
                 .addComponent(button)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(307, Short.MAX_VALUE))
         );
+
+        table.setBackground(new java.awt.Color(255, 255, 255));
+        table.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4", "Title 5"
+            }
+        ));
+        table.setGridColor(new java.awt.Color(204, 204, 255));
+        jScrollPane1.setViewportView(table);
+        ListSelectionModel listSelectionModel = table.getSelectionModel();
+        listSelectionModel.addListSelectionListener(createSelectionListener());
+        table.setSelectionModel(listSelectionModel);
+
+        jLabel1.setText("Test Description");
+
+        jLabel2.setText("Course Code");
+
+        jLabel3.setText("Date & Time");
+
+        jLabel4.setText("Open/Closed");
+
+        jLabel5.setText("Duration");
 
         javax.swing.GroupLayout AvailableLayout = new javax.swing.GroupLayout(Available);
         Available.setLayout(AvailableLayout);
         AvailableLayout.setHorizontalGroup(
             AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AvailableLayout.createSequentialGroup()
-                .addContainerGap(105, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 741, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(AvailableLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 855, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                    .addGroup(AvailableLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(39, 39, 39)))
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         AvailableLayout.setVerticalGroup(
             AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AvailableLayout.createSequentialGroup()
+            .addGroup(AvailableLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AvailableLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(237, 237, 237))
+            .addGroup(AvailableLayout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel5))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -187,8 +203,8 @@ public class Available_tests extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(Available, javax.swing.GroupLayout.PREFERRED_SIZE, 419, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 211, Short.MAX_VALUE))
+                .addComponent(Available, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 179, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -199,78 +215,85 @@ public class Available_tests extends javax.swing.JPanel {
 
     private void btnStartTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartTestActionPerformed
         // TODO add your handling code here:
-        String testName = (String) table.getValueAt(table.getSelectedRow(), 1);
-        String duration = (String) table.getValueAt(table.getSelectedRow(), 4);
+        String testName = (String) table.getValueAt(table.getSelectedRow(), 0);
+        String duration = (String) table.getValueAt(table.getSelectedRow(), 3);
         duration += ":00";
-        Home.pending_Tests.startCountdown(duration, testName);
+        Bson bsonFilter = Filters.eq("Title", testName);
+        FindIterable<Document> findIt = documents.filter(bsonFilter);
+        System.out.println("Result is: " + findIt.first());
+        Home.pending_Tests.startCountdown(duration, findIt.first());
         this.setVisible(false);
         Home.pending_Tests.setVisible(true);
     }//GEN-LAST:event_btnStartTestActionPerformed
-
-    private void tablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_tablePropertyChange
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tablePropertyChange
-
-    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tableMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Available;
     private javax.swing.JButton btnStartTest;
     private javax.swing.JButton button;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
+
+    public FindIterable<Document> documents = null;
 
     private Date getDate(String date) {
         Date dateObject = Date.from(Instant.parse(date));
         return dateObject;
     }
 
+    Date createDateFromDateTime(String date, String time) {
+        date += " " + time;
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY hh:mm");
+        try {
+            return formatter.parse(date);
+        } catch (ParseException ex) {
+            Logger.getLogger(Available_tests.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
     private ListSelectionListener createSelectionListener() {
 
         return (ListSelectionEvent e) -> {
-            //table.getValueAt(table.getSelectedRow(), WIDTH)
-            Date date = (Date) table.getValueAt(table.getSelectedRow(), 3);// the 3 is the index of the date 
-            /* if(date.compareTo(new Date(System.currentTimeMillis()))<=0)
+//            Object valueAt = table.getValueAt(table.getSelectedRow(), WIDTH);
+            Date date = (Date) table.getValueAt(table.getSelectedRow(), 2);// the 3 is the index of the date
+            if (date.compareTo(new Date(System.currentTimeMillis())) <= 0) {
                 btnStartTest.setEnabled(true);
-            else
+            } else {
                 btnStartTest.setEnabled(false);
-             */
-            btnStartTest.setEnabled(true);/*date.compareTo(new Date(System.currentTimeMillis()))<=0);*/
-
+            }
+//                btnStartTest.setEnabled(true);/*date.compareTo(new Date(System.currentTimeMillis()))<=0);*/
         };
     }
 
-    final void connect() {
-        mongoClient = new MongoClient("localhost", 27017);
-        db = mongoClient.getDatabase("SECAPP");
-    }
-    
-    final void disconnect(){
-        mongoClient.close();
-    }
-
     final void getData() {
-        MongoCollection coll = db.getCollection("testq");
+        MongoCollection coll = MongoUtil.getCollection("testq");
         documents = coll.find();
-        String[] columnNames = {"ID", "Test Description", "Course Code", "Date", "Time", "Open/Closed"};
+        String[] columnNames = {"Test Description", "Course Code", "Date", "Time", "Open/Closed"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         int counter = 0;
         for (Document obj : documents) {
             String testTitle = (String) obj.get("Title");
-            String courseCode = (String) obj.get("Course code");
-            Date date = getDate((String) obj.get("Date"));
-            String openORclosed = (String) obj.get("Open/Closed");
-            String duratation = (String) obj.get("Duration");
+            String courseCode = (String) obj.get("course_code");
+            String dateS = obj.getString("Date");
+            String timeS = obj.getString("Time");
+            Date date = createDateFromDateTime(dateS, timeS);
+            String openORclosed = (String) obj.get("Closed/Open");
+            Object duratation = obj.get("Duration");
             ObjectId id = (ObjectId) obj.get("_id");
-            model.addRow(new Object[]{id, testTitle, courseCode, date, duratation, openORclosed});
-            table.getTableHeader().setFont(new Font(Font.SERIF, Font.BOLD, 20));
-            table.getTableHeader().setBackground(new Color(122,71,221));
+            model.addRow(new Object[]{testTitle, courseCode, date, duratation, openORclosed});
+//            table.getTableHeader().setFont(new Font(Font.SERIF, Font.BOLD, 20));
+//            table.getTableHeader().setBackground(new Color(122,71,221));
         }
         table.setModel(model);
+        table.setTableHeader(null);
+        //table.setIntercellSpacing(new Dimension (10,20));
     }
 }

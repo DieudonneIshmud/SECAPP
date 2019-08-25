@@ -5,6 +5,20 @@
  */
 package secapp;
 
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
 /**
  *
  * @author Dieudo M
@@ -16,6 +30,7 @@ public class Completed_Tests extends javax.swing.JPanel {
      */
     public Completed_Tests() {
         initComponents();
+        getData2();
     }
 
     /**
@@ -27,22 +42,19 @@ public class Completed_Tests extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        completed = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        completed_table = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
-        jScrollPane1.setForeground(new java.awt.Color(0, 0, 0));
-        jScrollPane1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        completed.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTable1.setAutoCreateRowSorter(true);
-        jTable1.setBackground(new java.awt.Color(255, 255, 255));
-        jTable1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jTable1.setForeground(new java.awt.Color(0, 0, 0));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        completed_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -50,75 +62,123 @@ public class Completed_Tests extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "Course Code", "Title", "Status", "Marks"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
-            };
+        ));
+        jScrollPane1.setViewportView(completed_table);
+        ListSelectionModel listSelectionModel = completed_table.getSelectionModel();
+        listSelectionModel.addListSelectionListener(createSelectionListener());
+        completed_table.setSelectionModel(listSelectionModel);
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jTable1.setAlignmentX(0.9F);
-        jTable1.setAlignmentY(0.9F);
-        jTable1.setGridColor(new java.awt.Color(255, 255, 255));
-        jTable1.setIntercellSpacing(new java.awt.Dimension(5, 5));
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setResizable(false);
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(10);
-            jTable1.getColumnModel().getColumn(1).setResizable(false);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(10);
-            jTable1.getColumnModel().getColumn(2).setResizable(false);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(10);
-            jTable1.getColumnModel().getColumn(3).setResizable(false);
-            jTable1.getColumnModel().getColumn(3).setPreferredWidth(10);
-        }
+        jLabel1.setText("Test Title");
 
-        jButton1.setBackground(new java.awt.Color(54, 33, 89));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("View GradeBook");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        jLabel2.setText("Mark");
+
+        jLabel3.setText("jLabel1");
+
+        jLabel4.setText("Course Code");
+
+        javax.swing.GroupLayout completedLayout = new javax.swing.GroupLayout(completed);
+        completed.setLayout(completedLayout);
+        completedLayout.setHorizontalGroup(
+            completedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(completedLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 774, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(46, Short.MAX_VALUE))
+            .addGroup(completedLayout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(140, 140, 140)
+                .addComponent(jLabel4)
+                .addGap(129, 129, 129)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addGap(142, 142, 142))
+        );
+        completedLayout.setVerticalGroup(
+            completedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(completedLayout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addGroup(completedLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(325, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 584, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addComponent(jButton1)
-                .addContainerGap(49, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(completed, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 327, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(completed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(37, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+Date createDateFromDateTime(String date, String time) {
+        date += " " + time;
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY hh:mm");
+        try {
+            return formatter.parse(date);
+        } catch (ParseException ex) {
+            Logger.getLogger(Available_tests.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+    public FindIterable<Document> documents = null;
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        //gradebook grade = new gradebook();
-        //grade.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-
+    final void getData2() {
+        MongoCollection coll = MongoUtil.getCollection("marks");
+        documents = coll.find();
+        String[] columnNames = {"Test Description", "Course Code", "Open/Closed"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        int counter = 0;
+        for (Document obj : documents) {
+            String testTitle = (String) obj.get("Title");
+            String courseCode = (String) obj.get("course_code");
+            String studenID = (String) obj.get("Student_ID");
+            
+           
+            model.addRow(new Object[]{testTitle, courseCode, studenID});
+//            table.getTableHeader().setFont(new Font(Font.SERIF, Font.BOLD, 20));
+//            table.getTableHeader().setBackground(new Color(122,71,221));
+        }
+       completed_table.setModel(model);
+      completed_table.setTableHeader(null);
+        //table.setIntercellSpacing(new Dimension (10,20));
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel completed;
+    private javax.swing.JTable completed_table;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
+    private ListSelectionListener createSelectionListener() {
+        return (ListSelectionEvent e) -> {
+            Object valueAt = completed_table.getValueAt(completed_table.getSelectedRow(), WIDTH);
+        };
+            //Date date = (Date) table.getValueAt(table.getSelectedRow(), 2);// the 3 is the index of the date
+
+//                btnStartTest.setEnabled(true);/*date.compareTo(new Date(System.currentTimeMillis()))<=0);*/
+       
+    }
+    
 }

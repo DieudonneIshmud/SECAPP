@@ -34,7 +34,7 @@ public class MongoAtlasTest {
 		DBCursor cursor = examCol.find(query);
 		DBObject test1 = cursor.one();
 
-		System.out.println(test1);
+		//System.out.println(test1);
 	}
 
     
