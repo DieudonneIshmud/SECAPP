@@ -6,6 +6,8 @@
 package secapp;
 
 import java.awt.Color;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  *
@@ -13,6 +15,8 @@ import java.awt.Color;
  */
 public class Login extends javax.swing.JPanel {
 
+    public String user;
+    private String pass;
     /**
      * Creates new form Login
      */
@@ -32,14 +36,11 @@ public class Login extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         lbl_password = new javax.swing.JLabel();
-        txt_names = new javax.swing.JTextField();
-        jSeparator1 = new javax.swing.JSeparator();
         txt_username = new javax.swing.JTextField();
         jSeparator2 = new javax.swing.JSeparator();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        password = new javax.swing.JPasswordField();
         jSeparator3 = new javax.swing.JSeparator();
         jSeparator4 = new javax.swing.JSeparator();
-        lbl_names = new javax.swing.JLabel();
         lbl_username = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
@@ -48,29 +49,15 @@ public class Login extends javax.swing.JPanel {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel2.setBackground(new java.awt.Color(32, 33, 35));
+        jPanel2.setBackground(new java.awt.Color(102, 0, 102));
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbl_password.setBackground(new java.awt.Color(51, 52, 54));
-        lbl_password.setForeground(new java.awt.Color(51, 52, 54));
+        lbl_password.setForeground(new java.awt.Color(255, 255, 255));
         lbl_password.setText("Password");
         jPanel2.add(lbl_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 240, -1, 20));
 
-        txt_names.setBackground(new java.awt.Color(32, 33, 35));
-        txt_names.setForeground(new java.awt.Color(255, 255, 255));
-        txt_names.setBorder(null);
-        txt_names.setCaretColor(new java.awt.Color(255, 255, 255));
-        txt_names.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txt_namesFocusGained(evt);
-            }
-        });
-        jPanel2.add(txt_names, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 130, 270, 30));
-
-        jSeparator1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 170, 270, -1));
-
-        txt_username.setBackground(new java.awt.Color(32, 33, 35));
+        txt_username.setBackground(new java.awt.Color(255, 255, 255));
         txt_username.setForeground(new java.awt.Color(255, 255, 255));
         txt_username.setBorder(null);
         txt_username.setCaretColor(new java.awt.Color(255, 255, 255));
@@ -84,21 +71,21 @@ public class Login extends javax.swing.JPanel {
         jSeparator2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 250, 280, 0));
 
-        jPasswordField1.setBackground(new java.awt.Color(32, 33, 35));
-        jPasswordField1.setForeground(new java.awt.Color(255, 255, 255));
-        jPasswordField1.setText("jPasswordField1");
-        jPasswordField1.setBorder(null);
-        jPasswordField1.addFocusListener(new java.awt.event.FocusAdapter() {
+        password.setBackground(new java.awt.Color(32, 33, 35));
+        password.setForeground(new java.awt.Color(255, 255, 255));
+        password.setText("jPasswordField1");
+        password.setBorder(null);
+        password.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                jPasswordField1FocusGained(evt);
+                passwordFocusGained(evt);
             }
         });
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        password.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                passwordActionPerformed(evt);
             }
         });
-        jPanel2.add(jPasswordField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 270, 270, 10));
+        jPanel2.add(password, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 270, 270, 10));
 
         jSeparator3.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 290, 270, 10));
@@ -106,12 +93,8 @@ public class Login extends javax.swing.JPanel {
         jSeparator4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.add(jSeparator4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 240, 270, 10));
 
-        lbl_names.setForeground(new java.awt.Color(0, 153, 153));
-        lbl_names.setText("Names");
-        jPanel2.add(lbl_names, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 100, -1, 20));
-
-        lbl_username.setBackground(new java.awt.Color(51, 52, 54));
-        lbl_username.setForeground(new java.awt.Color(51, 52, 54));
+        lbl_username.setBackground(new java.awt.Color(255, 255, 255));
+        lbl_username.setForeground(new java.awt.Color(255, 255, 255));
         lbl_username.setText("Student ID");
         jPanel2.add(lbl_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 180, -1, 20));
 
@@ -119,6 +102,11 @@ public class Login extends javax.swing.JPanel {
         jButton1.setFont(new java.awt.Font("Segoe UI Black", 1, 14)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Login");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jPanel2.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 330, 270, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -144,52 +132,76 @@ public class Login extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void passwordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_passwordActionPerformed
 
     private void txt_usernameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_usernameFocusGained
         // TODO add your handling code here:
         lbl_username.setForeground(new Color(60,63,65));
         jSeparator4.setBackground(new Color(57,113,177));
         lbl_password.setForeground(new Color(51,52,54));
-        lbl_names.setForeground(new Color(51,52,54));
+        //lbl_names.setForeground(new Color(51,52,54));
         
        
         
     }//GEN-LAST:event_txt_usernameFocusGained
 
-    private void jPasswordField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jPasswordField1FocusGained
+    private void passwordFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_passwordFocusGained
         // TODO add your handling code here:
         
         lbl_password.setForeground(new Color(60,63,65));
         lbl_username.setForeground(new Color(51,52,54));
-        lbl_names.setForeground(new Color(51,52,54));
-    }//GEN-LAST:event_jPasswordField1FocusGained
-
-    private void txt_namesFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_namesFocusGained
+        //lbl_names.setForeground(new Color(51,52,54));
+    }//GEN-LAST:event_passwordFocusGained
+ private void setUsername(String user){
+        this.user = user;
+    }
+    
+    private void setPassword(String pass){
+        this.pass = pass;
+    }
+    
+    private String getUsername(){
+        return this.user;
+    }
+    
+    private String getPassword(){
+        return this.pass;
+    }
+    
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        lbl_names.setForeground(new Color(60,63,65));
-        jSeparator1.setBackground(new Color(57,113,177));
-        lbl_password.setForeground(new Color(51,52,54));
-        lbl_username.setForeground(new Color(51,52,54));
-        
-    }//GEN-LAST:event_txt_namesFocusGained
+        //System.out.println(pass);
+        user = txt_username.getText();
+        pass = new String (password.getPassword());
+        /*System.out.println(user +" "+pass);
+        UCTauthentication.authenticate(user, pass);*/
+        if (UCTauthentication.authenticate(user,pass)){
+            
+            Home homeScreen = null;
+            homeScreen = new Home();
+            homeScreen.setVisible(true);
+            //this.dispose();
+        }
+        else{
+            System.out.println("Access Denied");
+            // create popup that gives message
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
-    private javax.swing.JLabel lbl_names;
     private javax.swing.JLabel lbl_password;
     private javax.swing.JLabel lbl_username;
-    private javax.swing.JTextField txt_names;
+    private javax.swing.JPasswordField password;
     private javax.swing.JTextField txt_username;
     // End of variables declaration//GEN-END:variables
 }

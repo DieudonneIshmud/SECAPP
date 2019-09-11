@@ -1,7 +1,4 @@
-package secapp;
-
-
-
+package util;
 import java.util.Hashtable;
 import java.util.Scanner;
 
@@ -13,7 +10,7 @@ import javax.naming.ldap.LdapContext;
 
 public class UCTauthentication 
 {
-	public static boolean authenticate(String id, String password) {
+    public static boolean authenticate(String id, String password) {
         boolean answer = false;
         //id = "123";
         //password = "123";
@@ -27,7 +24,7 @@ public class UCTauthentication
         ldapEnv.put(Context.SECURITY_AUTHENTICATION, "simple");
         ldapEnv.put(Context.SECURITY_PRINCIPAL, "cn=" + id + ",ou=users,o=uct");
         ldapEnv.put(Context.SECURITY_CREDENTIALS, password);
-//        ldapEnv.put("java.naming.ldap.factory.socket", BlindSSLSocketFactoryTest.class.getName());
+        ldapEnv.put("java.naming.ldap.factory.socket", BlindSSLSocketFactoryTest.class.getName());
 
         try {
             LdapContext ctx = new InitialLdapContext(ldapEnv, null);

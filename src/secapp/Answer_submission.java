@@ -16,7 +16,7 @@ public class Answer_submission {
 	private String studentID;
 	private String answers;
 	private String course_code;
-        private ArrayList<Question> AnswersList;
+        //private ArrayList<Question> AnswersList;
 	//private int mark;
 	
 	public Answer_submission(String testTitle, String course_code, String studentID,String answers) {
@@ -57,14 +57,14 @@ public class Answer_submission {
 		return studentID;
 	}
 	public void addAnswers(ArrayList<Pending_Tests> ans) {
-    	this.AnswersList = ans;
+//    	this.AnswersList = ans;
     }
-        public ArrayList<Pending_Tests> ShowAnswers() {
-    	return AnswersList;
-    }
+    //    public ArrayList<Pending_Tests> ShowAnswers() {
+  //  	return AnswersList;
+   // }
 	
 	public String toString() {
-		return "Title: "+ this.testTitle + "Course Code: "+ this.course_code + "Student ID: "+ this.studentID + "Answer: " + this.answers ;
+        return "Title: "+ this.testTitle + "Course Code: "+ this.course_code + "Student ID: "+ this.studentID + "Answer: " + this.answers ;
 	}
     
     

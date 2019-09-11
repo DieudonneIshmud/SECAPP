@@ -5,16 +5,34 @@
  */
 package secapp;
 
+import com.github.sarxos.webcam.Webcam;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import com.mongodb.gridfs.GridFS;
+import com.mongodb.gridfs.GridFSInputFile;
+import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.WinReg;
 import java.awt.Dimension;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.imageio.ImageIO;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -47,11 +65,7 @@ public class Available_tests extends javax.swing.JPanel {
     }
 
     ;
-        
-   
-    
-        
-      
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -64,7 +78,6 @@ public class Available_tests extends javax.swing.JPanel {
 
         Available = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        btnStartTest = new javax.swing.JButton();
         button = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
@@ -73,6 +86,7 @@ public class Available_tests extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        btnStartTest = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -80,17 +94,6 @@ public class Available_tests extends javax.swing.JPanel {
         Available.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        btnStartTest.setBackground(new java.awt.Color(54, 33, 89));
-        btnStartTest.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
-        btnStartTest.setForeground(new java.awt.Color(255, 255, 255));
-        btnStartTest.setText("Start Test");
-        btnStartTest.setEnabled(false);
-        btnStartTest.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnStartTestActionPerformed(evt);
-            }
-        });
 
         button.setBackground(new java.awt.Color(54, 33, 89));
         button.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -108,23 +111,19 @@ public class Available_tests extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnStartTest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(button, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(btnStartTest)
-                .addGap(40, 40, 40)
+                .addGap(102, 102, 102)
                 .addComponent(button)
                 .addContainerGap(307, Short.MAX_VALUE))
         );
 
-        table.setBackground(new java.awt.Color(255, 255, 255));
-        table.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        table.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        table.setForeground(new java.awt.Color(51, 0, 51));
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -137,20 +136,48 @@ public class Available_tests extends javax.swing.JPanel {
             }
         ));
         table.setGridColor(new java.awt.Color(204, 204, 255));
+        table.setRowMargin(3);
         jScrollPane1.setViewportView(table);
+        if (table.getColumnModel().getColumnCount() > 0) {
+            table.getColumnModel().getColumn(2).setResizable(false);
+            table.getColumnModel().getColumn(2).setPreferredWidth(15);
+            table.getColumnModel().getColumn(3).setPreferredWidth(3);
+        }
         ListSelectionModel listSelectionModel = table.getSelectionModel();
         listSelectionModel.addListSelectionListener(createSelectionListener());
         table.setSelectionModel(listSelectionModel);
 
+        jLabel1.setBackground(new java.awt.Color(83, 51, 113));
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel1.setText("Test Description");
 
+        jLabel2.setBackground(new java.awt.Color(83, 51, 113));
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("Course Code");
+        jLabel2.setDoubleBuffered(true);
 
+        jLabel3.setBackground(new java.awt.Color(83, 51, 113));
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setText("Date & Time");
 
+        jLabel4.setBackground(new java.awt.Color(83, 51, 113));
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("Open/Closed");
 
+        jLabel5.setBackground(new java.awt.Color(83, 51, 113));
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel5.setText("Duration");
+
+        btnStartTest.setBackground(new java.awt.Color(54, 33, 89));
+        btnStartTest.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        btnStartTest.setForeground(new java.awt.Color(255, 255, 255));
+        btnStartTest.setText("Start Test");
+        btnStartTest.setEnabled(false);
+        btnStartTest.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnStartTestActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout AvailableLayout = new javax.swing.GroupLayout(Available);
         Available.setLayout(AvailableLayout);
@@ -162,10 +189,10 @@ public class Available_tests extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 855, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(AvailableLayout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AvailableLayout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(29, 29, 29)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -173,13 +200,17 @@ public class Available_tests extends javax.swing.JPanel {
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(39, 39, 39)))
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)))
+                .addGroup(AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnStartTest)))
         );
         AvailableLayout.setVerticalGroup(
             AvailableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AvailableLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(35, 35, 35)
+                .addComponent(btnStartTest)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(AvailableLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
@@ -189,8 +220,8 @@ public class Available_tests extends javax.swing.JPanel {
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -204,7 +235,7 @@ public class Available_tests extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(Available, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 179, Short.MAX_VALUE))
+                .addGap(0, 108, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -213,16 +244,267 @@ public class Available_tests extends javax.swing.JPanel {
         getData();
     }//GEN-LAST:event_buttonActionPerformed
 
+    // Defining removable storage and autorun security feature
+    public static Thread fileblocker; 
+    public static void initFileBlocker(boolean bool) throws Exception
+    {
+        fileblocker = new Thread()
+        {
+         @Override
+         public void run() 
+         {
+             boolean usb = Advapi32Util.registryKeyExists(WinReg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services\\USBSTOR");		
+             boolean cdrom = Advapi32Util.registryKeyExists(WinReg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services\\cdrom");
+             boolean internet = Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings");
+             boolean autorun = Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER,"Software\\Microsoft\\Windows\\CurrentVersion\\Policies");
+
+             // USB
+             if(bool)
+             {
+                 if(usb)
+                 {
+                         Advapi32Util.registrySetIntValue(WinReg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services\\USBSTOR", "Start", 4);
+                         System.out.println("USB turned off");
+                 }else 
+                 {
+                         System.out.println("Something went wrong. The usbtor registry key was not found");
+                         // this should not be created from scratch because I think it should be there by default
+                 }
+
+                 // CDROM
+                 if(cdrom)
+                 {
+                         Advapi32Util.registrySetIntValue(WinReg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services\\cdrom", "Start", 4);
+                         System.out.println("CDrom turned off");
+                 }else
+                 {
+                         System.out.println("Something went wrong. The cdrom registry key was not found");
+                         // this should not be created from scratch because I think it should be there by default
+                 }
+
+                 // disable all removable drives
+                 if(autorun)
+                 {
+                         Advapi32Util.registrySetIntValue(WinReg.HKEY_CURRENT_USER,"Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer","NoDriveTypeAutorun",4);
+                 }else
+                 {
+                         System.out.println("Something went wrong. The autorun registry key was not found");
+                         // this should not be created from scratch because I think it should be there by default
+                 }
+             }
+             else
+             {
+                 // USB
+                 Advapi32Util.registrySetIntValue(WinReg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services\\USBSTOR", "Start", 3);
+
+                 // CDROM
+                 Advapi32Util.registrySetIntValue(WinReg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Services\\cdrom", "Start", 1);
+
+                 // AUTORUN
+                 Advapi32Util.registrySetIntValue(WinReg.HKEY_CURRENT_USER,"Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer","NoDriveTypeAutorun",91);
+                 System.out.println("System settings are back to normal");
+             }
+         }  
+        }; 
+        fileblocker.start();
+    }
+    
+    // Defining webcam security feature
+    private static Thread capturing;
+    public static boolean capture=true;
+    public static void initCapturingThread() //DataInputStream dis, DataOutputStream dos) throws InterruptedException
+    {
+            capturing = new Thread() 
+            {
+            @Override
+            public void run() 
+            {
+                try
+                {
+                  // Folder to store pictures to upload - student's app code
+		File uploads = new File("ImagesToUpload");
+		// Always create a new folder to overwrite inside contents. 
+		// Its fine because they would have already been backed-up to the database
+		uploads.mkdir();
+		//
+		System.out.println("Taking pictures");
+		
+		// open webcam
+		Webcam webcam = Webcam.getDefault();
+		webcam.open();
+		
+                
+		// create a "photo" namespace in the  DB
+		DatabaseCon dbc = new DatabaseCon();
+                DB db = dbc.getDB();
+                GridFS gfsPhoto = new GridFS(db, "photo");
+		
+		Integer i=0;
+		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                Calendar cal = Calendar.getInstance();
+		
+                GridFSInputFile gfsFile;
+                while(capture) //while on test-mode
+		{
+			/** TAKE PICTURES AND STORE LOCALLY TEMPORARILY **/
+			
+                        String studentNo = Home.username;
+			String filename = studentNo+"_"+dateFormat.format(cal.getTime()).toString()+Integer.toString(i);
+			ImageIO.write(webcam.getImage(), "JPG", new File("ImagesToUpload/"+filename+".jpg"));
+
+			
+			/** UPLOAD PICTURE TO MONGO **/
+			
+			File imageFile = new File("ImagesToUpload/"+filename+".jpg");
+			
+			// get image file from local drive
+			gfsFile = gfsPhoto.createFile(imageFile);
+			
+			// set a new filename for identify purpose
+			gfsFile.setFilename(filename);
+			
+			// setting data used to identify pictures belong to a student
+			BasicDBObject query = new BasicDBObject();
+			query.put("id2", studentNo);
+			gfsFile.setMetaData(query);
+			
+			// save image to mongo and delete local copy
+			gfsFile.save();
+			imageFile.delete();
+			
+			i++;
+			Thread.sleep(2000);
+		}
+		// delete local folder
+		uploads.delete();
+		System.out.println("Done taking and uploading pictures");
+                webcam.close();
+                } catch(IOException e) { e.printStackTrace();} catch (InterruptedException ex) {
+                    Logger.getLogger(Available_tests.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };      
+        capturing.start();
+	}    
+    
+    // Defining keyboard security feature
+    public static boolean keyboardOn = true;
+    public static Process p;
+    public static void initKeyboardThread() //DataInputStream dis, DataOutputStream dos) throws InterruptedException
+    {
+            Thread keyboard = new Thread() 
+            {
+            @Override
+            public void run() 
+            {
+                try
+                {
+                 // Creates a folder that stores batch scripts for the keyboard
+		File file = new File("KeyboardScripts");
+        if (!file.exists()) 
+        {
+        	file.mkdir();
+        }
+        
+        // Creating an installer file for choco and autohotkey
+		PrintWriter writer1 = new PrintWriter("KeyboardScripts/installer.bat", "UTF-8");
+		writer1.println("REM Installing chocolately");
+		writer1.println("@\"%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command \"iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))\" && SET \"PATH=%PATH%;%ALLUSERSPROFILE%\\chocolatey\\bin\"");
+		writer1.println();
+		writer1.println("REM Using chocolately to install autohotkey");
+		writer1.println("choco install autohotkey -y");		
+		writer1.close();
+		
+		//Creating a script file for autohotkey
+		PrintWriter writer2 = new PrintWriter("KeyboardScripts/autohotkey.ahk", "UTF-8");
+		writer2.println("LWin::return\r\n" + 
+				"RWin::return\r\n" + 
+				"Ctrl::return\r\n" + 
+				"LCtrl::return\r\n" + 
+				"RCtrl::return\r\n" + 
+				"Alt::return\r\n" + 
+				"LAlt::return\r\n" + 
+				"RAlt::return\r\n" + 
+				"PrintScreen::return\r\n" + 
+				"Esc::return\r\n" + 
+				"F1::return\r\n" +
+                                "F2::return\r\n" +
+                                "F3::return\r\n" +
+                                "F4::return\r\n" +
+                                "F5::return\r\n" +
+                                "F6::return\r\n" +
+                                "F7::return\r\n" +
+                                "F8::return\r\n" +
+                                "F9::return\r\n" +
+                                "F10::return\r\n" +
+                                "F11::return\r\n" +
+                                "F12::return\r\n" +
+                                "F13::return\r\n" +
+                                "F14::return\r\n" +
+                                "F15::return\r\n" +
+                                "F16::return\r\n" +
+                                "F17::return\r\n" +
+                                "F18::return\r\n" +
+                                "F19::return\r\n" +
+                                "F20::return\r\n" +
+                                "F21::return\r\n" +
+                                "F22::return\r\n" +
+                                "F23::return\r\n" +
+                                "F24::return\r\n" +
+				"^+Esc::return");
+		writer2.close();
+		
+		// if choco not found, install both choco and autohotkey
+		if(!new File("C:\\ProgramData\\chocolatey").exists())
+		{
+			System.out.println("choco dir does not exist");
+			Process p1 = Runtime.getRuntime().exec("KeyboardScripts/installer.bat");    // installs choco and autohotkey
+			System.out.println("installing choco and autohotkey");
+			p1.waitFor();
+			System.out.println("done installing");
+		}
+		
+		// run the autohotkeyscript
+		
+		System.out.println("keyboard deactived");
+		p = Runtime.getRuntime().exec(new String[] { "C:\\Program Files\\AutoHotkey\\AutoHotkey.exe", "KeyboardScripts\\autohotkey.ahk"});
+		Thread.currentThread(); 
+                }
+                catch(Exception e)
+                {
+                    System.out.println(e);
+                }   
+            } 
+        };
+            keyboard.start();
+    }
+    
+    
     private void btnStartTestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartTestActionPerformed
-        // TODO add your handling code here:
+       
+        // switch on security features
+        try
+        {
+            initFileBlocker(true);
+            initCapturingThread();
+            initKeyboardThread();
+        }catch(Exception e) { e.printStackTrace();}
+        
+        
         String testName = (String) table.getValueAt(table.getSelectedRow(), 0);
         String duration = (String) table.getValueAt(table.getSelectedRow(), 3);
         duration += ":00";
         Bson bsonFilter = Filters.eq("Title", testName);
         FindIterable<Document> findIt = documents.filter(bsonFilter);
         System.out.println("Result is: " + findIt.first());
-        Home.pending_Tests.startCountdown(duration, findIt.first());
+        try {
+            Home.pending_Tests.startCountdown(duration, findIt.first());
+        } catch (Exception e) {
+            System.out.println(e);
+        } 
         this.setVisible(false);
+//        Home.dispose();
+//        this.setUndecorated(true);
         Home.pending_Tests.setVisible(true);
     }//GEN-LAST:event_btnStartTestActionPerformed
 
@@ -249,8 +531,10 @@ public class Available_tests extends javax.swing.JPanel {
     }
 
     Date createDateFromDateTime(String date, String time) {
+        System.out.printf("Date is %s, Time is %s\n", date, time);
         date += " " + time;
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/YYYY hh:mm");
+        System.out.println(date);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         try {
             return formatter.parse(date);
         } catch (ParseException ex) {

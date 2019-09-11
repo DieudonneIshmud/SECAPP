@@ -20,16 +20,16 @@ import javax.swing.JOptionPane;
  *
  * @author Dieudo M
  */
-public class Home extends javax.swing.JFrame {
+public class HomeOLD extends javax.swing.JFrame {
     
-     
      GridBagLayout layout =  new GridBagLayout();
-     public static Completed_Tests completed;
+     static Completed_Tests completed;
      //static Available_tests completed;
-     public static Available_tests pending;
+     static Available_tests pending;
      //static all_answers answers;
-     public static Pending_Tests pending_Tests;
-     public static Gradebook gradebook;
+     static Pending_Tests pending_Tests;
+     static Gradebook gradebook;
+     static Successful succ;
      public static String username;
     
      
@@ -39,31 +39,28 @@ public class Home extends javax.swing.JFrame {
     /**
      * Creates new form Home
      */
-    public Home(String username) {
+    public HomeOLD(String user) {
         initComponents();
         MongoUtil.connect();
-        this.username = username;
-        
-        dispose();
-        this.setUndecorated(true);
-        this.setExtendedState(MAXIMIZED_BOTH);
-        this.setAlwaysOnTop(true);
-        
-        this.setVisible(true);
-        
-        System.out.println(username);
-        
-        
+        this.username = user;
         //completed =  new Completed_Tests();
         completed =  new Completed_Tests();
         pending = new Available_tests();
-        pending.setVisible(false);
-        completed.setVisible(false);
        // answers =  new all_answers();
         pending_Tests = new Pending_Tests();
-        pending_Tests.setVisible(false);
         gradebook =  new Gradebook();
+        succ = new Successful();
         
+        dispose();
+       this.setUndecorated(true);
+      // this.setAlwaysOnTop(true);
+       setExtendedState(MAXIMIZED_BOTH); 
+       this.setVisible(true);
+        completed.setVisible(false);
+        pending.setVisible(false);
+        pending_Tests.setVisible(false);
+        //answers.setVisible(false);
+        //home.setUndecorated(true);
         
         
         mainPanel.setLayout(layout);
@@ -436,6 +433,8 @@ public class Home extends javax.swing.JFrame {
          completed.setVisible(false);
          //answers.setVisible(true);
          pending_Tests.setVisible(false);
+         gradebook.setVisible(false);
+         succ.setVisible(false);
          
     }//GEN-LAST:event_pendingAreaMouseClicked
 
@@ -449,6 +448,7 @@ public class Home extends javax.swing.JFrame {
        //answers.setVisible(false);
        pending_Tests.setVisible(false);
        completed.setVisible(false);
+       succ.setVisible(false);
         
     }//GEN-LAST:event_gradebook_areaMouseClicked
 
@@ -462,6 +462,7 @@ public class Home extends javax.swing.JFrame {
        //answers.setVisible(false);
        pending_Tests.setVisible(false);
        gradebook.setVisible(false);
+       succ.setVisible(false);
         
        
     }//GEN-LAST:event_competedAreaMousePressed
@@ -470,12 +471,14 @@ public class Home extends javax.swing.JFrame {
         // TODO add your handling code here:
         completed.setVisible(false);
         pending.setVisible(false);
+        
        //answers.setVisible(false);
        pending_Tests.setVisible(false);
         gradebook_area.setBackground(new Color(126, 87, 194));
         competedArea.setBackground(new Color(54,33,89));
         pendingArea.setBackground(new Color(54,33,89));
         gradebook.setVisible(true);
+        succ.setVisible(false);
         
     }//GEN-LAST:event_gradebook_areaMousePressed
 
@@ -523,33 +526,34 @@ public class Home extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
+    
     /*public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        /*try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
 
-        /* Create and display the form */
-        //MongoUtil.connect(); 
-        /*java.awt.EventQueue.invokeLater(new Runnable() {
+        /* Create and display the form 
+        MongoUtil.connect(); 
+        java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 //private Home home = new Home();
                 Home home =  new Home();  

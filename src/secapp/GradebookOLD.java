@@ -5,32 +5,33 @@
  */
 package secapp;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import static com.mongodb.client.model.Filters.eq;
 import java.awt.Color;
 import java.awt.Font;
 import static java.awt.image.ImageObserver.WIDTH;
+import java.util.List;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
 /**
  *
  * @author Dieudo M
  */
-public class Gradebook extends javax.swing.JPanel {
+public class GradebookOLD extends javax.swing.JPanel {
 
     /**
      * Creates new form Gradebook
      */
-    public Gradebook() {
+    public GradebookOLD() {
         initComponents();
-        
+                
         table_gradebook.setShowGrid(true);
         table_gradebook.setGridColor(new Color(54,33,89));
         table_gradebook.setRowHeight(table_gradebook.getRowHeight() + 8);
@@ -39,7 +40,12 @@ public class Gradebook extends javax.swing.JPanel {
         header.setBackground(new Color(54,33,89));
        // header.setForeground(Color.yellow);
         header.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        getData2();
+        System.out.println("Before the method");
+        getData2(); 
+        System.out.println("After the method");
+
+        
+       
     }
     
 
@@ -77,6 +83,11 @@ public class Gradebook extends javax.swing.JPanel {
             }
         ));
         jScrollPane2.setViewportView(table_gradebook);
+        if (table_gradebook.getColumnModel().getColumnCount() > 0) {
+            table_gradebook.getColumnModel().getColumn(0).setHeaderValue("Title 1");
+            table_gradebook.getColumnModel().getColumn(1).setHeaderValue("Title 2");
+            table_gradebook.getColumnModel().getColumn(2).setHeaderValue("Title 3");
+        }
         ListSelectionModel listSelectionModel = table_gradebook.getSelectionModel();
         listSelectionModel.addListSelectionListener(createSelectionListener());
         table_gradebook.setSelectionModel(listSelectionModel);
@@ -116,30 +127,41 @@ public class Gradebook extends javax.swing.JPanel {
                     .addComponent(jLabel4)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(341, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(357, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 public FindIterable<Document> documents = null;
-
+    
     final void getData2() {
         MongoCollection coll = MongoUtil.getCollection("marks");
-        documents = coll.find(eq("Student_ID", Home.username));
+        documents = coll.find();
         String[] columnNames = {"testTitle", "courseCode", "marks"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         int counter = 0;
         for (Document obj : documents) {
             String testTitle = (String) obj.get("Title");
             String courseCode = (String) obj.get("course_code");
-            String studenID = (String) obj.get("Student_ID");
+            String studentID = (String) obj.get("Student_ID");
             String marks = (String) obj.get("total");
             //int marks2 = (int) obj.get("total");
- 
+            if (studentID == Home.username)
             model.addRow(new Object[]{testTitle, courseCode, marks});
         }
+       
+  
         table_gradebook.setModel(model);
       table_gradebook.setTableHeader(null);
     }
+    
+//    public void getDistinct(){
+//         DBCollection collection = (DBCollection) MongoUtil.db.getCollection("marks");
+//        List distinctCity = collection.distinct("studentID");
+//        for (int i = 0; i < distinctCity.size(); i++) {
+//            BasicDBObject query = new BasicDBObject();
+//            query.put("cityname", distinctCity.get(i));
+//        }
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
